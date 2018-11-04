@@ -24,6 +24,10 @@ class Generator {
   private static final String TPL_POINTS_SET = "D:/workdir/brueckl-hotvolleys-source/_work/statistics.set.html";
   private static final String TPL_POINT_A = "D:/workdir/brueckl-hotvolleys-source/_work/statistics.point.a.html";
   private static final String TPL_POINT_B = "D:/workdir/brueckl-hotvolleys-source/_work/statistics.point.b.html";
+  private static final String TPL_TO_A = "D:/workdir/brueckl-hotvolleys-source/_work/statistics.to.a.html";
+  private static final String TPL_TO_B = "D:/workdir/brueckl-hotvolleys-source/_work/statistics.to.b.html";
+  private static final String TPL_SUBST_A = "D:/workdir/brueckl-hotvolleys-source/_work/statistics.subst.a.html";
+  private static final String TPL_SUBST_B = "D:/workdir/brueckl-hotvolleys-source/_work/statistics.subst.b.html";
 
   private static final String HTML_STATS = "D:/workdir/brueckl-hotvolleys-source/uld/statistics3.html";
 
@@ -36,6 +40,10 @@ class Generator {
   private final String tplPointsSet;
   private final String tplPointA;
   private final String tplPointB;
+  private final String tplToA;
+  private final String tplToB;
+  private final String tplSubstA;
+  private final String tplSubstB;
 
   Generator(List<Match> data) {
     this.data = data;
@@ -48,9 +56,13 @@ class Generator {
     tplPointsSet = readFile(TPL_POINTS_SET);
     tplPointA = readFile(TPL_POINT_A);
     tplPointB = readFile(TPL_POINT_B);
+    tplToA = readFile(TPL_TO_A);
+    tplToB = readFile(TPL_TO_B);
+    tplSubstA = readFile(TPL_SUBST_A);
+    tplSubstB = readFile(TPL_SUBST_B);
   }
 
-  private String readFile(String fn) {
+  private static String readFile(String fn) {
     StringBuilder sb = new StringBuilder();
     Charset charset = Charset.forName("UTF-8");
     File file = new File(fn);
@@ -99,6 +111,7 @@ class Generator {
         sbAllPts.append(tplPoints);
 
         int idxSet = 0;
+        StringBuilder action;
         StringBuilder sbSets = new StringBuilder();
         for (SetPoints sp : match.points) {
           SB sbSet = new SB(tplPointsSet);
@@ -119,6 +132,10 @@ class Generator {
                 SB sbPt = new SB(tplPointA);
                 sbPt.replace("{{point}}", ++lastA);
                 sbPts.append(sbPt.toStr());
+
+                if (null != (action = checkForAction(sp, lastA, lastB))) {
+                  sbPts.append(action);
+                }
               }
             }
 
@@ -129,6 +146,10 @@ class Generator {
                 SB sbPt = new SB(tplPointB);
                 sbPt.replace("{{point}}", ++lastB);
                 sbPts.append(sbPt.toStr());
+
+                if (null != (action = checkForAction(sp, lastA, lastB))) {
+                  sbPts.append(action);
+                }
               }
             }
 
@@ -139,6 +160,10 @@ class Generator {
                 SB sbPt = new SB(tplPointA);
                 sbPt.replace("{{point}}", ++lastA);
                 sbPts.append(sbPt.toStr());
+
+                if (null != (action = checkForAction(sp, lastA, lastB))) {
+                  sbPts.append(action);
+                }
               }
             }
 
@@ -194,5 +219,37 @@ class Generator {
     } catch (IOException x) {
       System.err.format("IOException: %s%n", x);
     }
+  }
+
+  private StringBuilder checkForAction(SetPoints sp, int ptA, int ptB) {
+    StringBuilder result = null;
+    List<Action> actions = sp.actions(ptA, ptB);
+    if (actions != null) {
+      result = new StringBuilder();
+      for (Action action : actions) {
+        SB sbAct = new SB();
+        switch (action.type) {
+
+          case SUBSTITUTION:
+            sbAct.append(action.teamA ? tplSubstA : tplSubstB);
+            String[] infos = action.info.split("/");
+            if (infos.length == 2) {
+              sbAct
+                .replace("{{info1}}", infos[0])
+                .replace("{{info2}}", infos[1]);
+            }
+            // sbAct.replace("{{info}}", action.info.replace("/", "<br>"));
+            break;
+
+          case TIMEOUT:
+            sbAct.append(action.teamA ? tplToA : tplToB);
+            break;
+        }
+
+        result.append(sbAct.toStr());
+      }
+    }
+
+    return result;
   }
 }

@@ -126,19 +126,27 @@ public class Main {
 
       startRow += 3;
       int col = 18;
+      int colAct = 27;
       SetPoints sp;
       do {
         sp = readPoints(startRow, col);
         if (sp != null) {
+          // read optional actions
+          readActions(sp, startRow, ++colAct);
           match.addPoints(sp);
           col += 2;
         }
       } while (sp != null);
 
+      // debug
+      String LIN = "----------------------------------------------------------";
+      System.out.println(LIN);
       System.out.println("match: " + match.date + " " + match.info);
+      System.out.println(LIN);
+      System.out.println(match.toString());
+      System.out.println(LIN);
     }
 
-    // System.out.println(match.toString());
     return match;
   }
 
@@ -231,6 +239,22 @@ public class Main {
     return sp;
   }
 
+  static void readActions(SetPoints sp, int row, int col) {
+    XSSFRow r;
+
+    do {
+      r = SHEET.getRow(row++);
+      if (r != null) {
+        String info = getStr(r, col);
+        if (info.isEmpty()) {
+          r = null;
+        } else {
+          sp.add(info);
+        }
+      }
+    } while (r != null);
+  }
+
   static int getInt(XSSFRow row, int col) {
     int val = -1;
 
@@ -286,8 +310,15 @@ public class Main {
     String val = "";
 
     XSSFCell cell = row.getCell(col);
-    if (cell != null && cell.getCellType() == CellType.FORMULA) {
-      val = cell.getRawValue();
+    if (cell != null) {
+      switch (cell.getCellType()) {
+        case FORMULA:
+          val = cell.getRawValue();
+          break;
+        case STRING:
+          val = cell.getStringCellValue();
+          break;
+      }
     }
 
     return val;

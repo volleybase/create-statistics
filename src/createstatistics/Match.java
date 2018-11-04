@@ -38,6 +38,10 @@ class Match {
       sb.append(Str.NL).append(player.toString());
     }
 
+    for (SetPoints sp : points) {
+      sb.append(Str.NL).append(sp.toString());
+    }
+
     return sb.toString();
   }
 }
