@@ -1,9 +1,7 @@
 package createstatistics;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Additional actions of a set (timeout, substitution).
@@ -16,8 +14,18 @@ class Action {
    * The type of the action.
    */
   enum Type {
+    /**
+     * T, t: time out
+     */
     TIMEOUT,
-    SUBSTITUTION
+    /**
+     * W, w: substitution/Wechsel
+     */
+    SUBSTITUTION,
+    /**
+     * S, s: Service
+     */
+    SERVICE
   }
 
   /**
@@ -77,10 +85,57 @@ class Action {
       case SUBSTITUTION:
         t = teamA ? "W" : "w";
         break;
+      case SERVICE:
+        t = teamA ? "S" : "s";
+        break;
     }
     sb.append(key).append(":").append(t);
     if (info != null) {
       sb.append(":").append(info);
+    }
+
+    return sb.toString();
+  }
+}
+
+class XMap {
+
+  private final List<String> keys = new ArrayList<>();
+  private final List<Action> actions = new ArrayList<>();
+  private int index = 0;
+
+  void add(String key, Action action) {
+    keys.add(key);
+    actions.add(action);
+  }
+
+  boolean isEmpty() {
+    return keys.isEmpty();
+  }
+
+  void reset() {
+    index = 0;
+  }
+
+  Action next(String key) {
+
+    // if action for key found: return it, then increase index
+    if (index < keys.size() && keys.get(index).equals(key)) {
+      return actions.get(index++);
+    }
+
+    // nothing found
+    return null;
+  }
+
+  @Override
+  public String toString() {
+    StringBuilder sb = new StringBuilder();
+    for (int i = 0; i < keys.size(); ++i) {
+      if (i > 0) {
+        sb.append(Str.NL);
+      }
+      sb.append(keys.get(i)).append(": ").append(actions.get(i));
     }
 
     return sb.toString();
@@ -97,7 +152,8 @@ class SetPoints {
   final List<Integer> pointsA = new ArrayList<>();
   final List<Integer> pointsB = new ArrayList<>();
   boolean startA;
-  final HashMap<String, List<Action>> actions = new HashMap<>();
+  // final HashMap<String, List<Action>> actions = new HashMap<>();
+  final XMap actions = new XMap();
 
   SetPoints(boolean startA) {
     this.startA = startA;
@@ -116,28 +172,46 @@ class SetPoints {
   SetPoints add(String actioninfo) {
     String[] parts = actioninfo.split(":");
     if (parts.length >= 3) {
-      String key = parts[0] + ":" + parts[1];
 
-      switch (parts[2]) {
+      boolean found = false;
+      String key = "";
 
-        case "T":
-        case "t":
+      switch (parts[1]) {
+        case "S":
+        case "s":
+          key = (parts[1].equals("S") ? "A:" : "B:") + parts[0];
           if (parts.length != 3) {
             err(actioninfo);
           }
-          add(new Action(key, Action.Type.TIMEOUT, parts[2].equals("T")));
+          add(new Action(key, Action.Type.SERVICE, parts[1].equals("S"), parts[2]));
+          found = true;
           break;
+      }
 
-        case "W":
-        case "w":
-          if (parts.length != 4) {
+      if (!found) {
+        key = parts[0] + ":" + parts[1];
+
+        switch (parts[2]) {
+
+          case "T":
+          case "t":
+            if (parts.length != 3) {
+              err(actioninfo);
+            }
+            add(new Action(key, Action.Type.TIMEOUT, parts[2].equals("T")));
+            break;
+
+          case "W":
+          case "w":
+            if (parts.length != 4) {
+              err(actioninfo);
+            }
+            add(new Action(key, Action.Type.SUBSTITUTION, parts[2].equals("W"), parts[3]));
+            break;
+
+          default:
             err(actioninfo);
-          }
-          add(new Action(key, Action.Type.SUBSTITUTION, parts[2].equals("W"), parts[3]));
-          break;
-
-        default:
-          err(actioninfo);
+        }
       }
     } else {
       err(actioninfo);
@@ -148,20 +222,21 @@ class SetPoints {
 
   private void add(Action action) {
 
-    // the list of action for the given key
-    List<Action> acts = null;
-
-    // action for this key already added: use this list
-    if (this.actions.containsKey(action.key)) {
-      acts = this.actions.get(action.key);
-    } else {
-      // else: create new list and add it
-      acts = new ArrayList<>();
-      this.actions.put(action.key, acts);
-    }
-
-    // add new action to list for current key
-    acts.add(action);
+//    // the list of action for the given key
+//    List<Action> acts = null;
+//
+//    // action for this key already added: use this list
+//    if (this.actions.containsKey(action.key)) {
+//      acts = this.actions.get(action.key);
+//    } else {
+//      // else: create new list and add it
+//      acts = new ArrayList<>();
+//      this.actions.put(action.key, acts);
+//    }
+//
+//    // add new action to list for current key
+//    acts.add(action);
+    actions.add(action.key, action);
   }
 
   private static void err(String actioninfo) {
@@ -177,15 +252,34 @@ class SetPoints {
    */
   List<Action> actions(int a, int b) {
 
-    String key = a + ":" + b;
-    if (this.actions.containsKey(key)) {
-      return this.actions.get(key);
-    }
+//    if (this.actions.containsKey(key)) {
+//      return this.actions.get(key);
+//    }
+    List<Action> acts = new ArrayList<Action>();
+    Action action;
+    do {
+      String key = a + ":" + b;
+      action = actions.next(key);
+      if (action == null) {
+        key = "A:" + a;
+        action = actions.next(key);
 
-    return null;
+        if (action == null) {
+          key = "B:" + b;
+          action = actions.next(key);
+        }
+      }
+
+      if (action != null) {
+        acts.add(action);
+      }
+    } while (action != null);
+
+    return acts.size() > 0 ? acts : null;
   }
 
   @Override
+
   public String toString() {
     StringBuilder sb = new StringBuilder();
 
@@ -208,18 +302,19 @@ class SetPoints {
 
     // add optional actions
     if (!actions.isEmpty()) {
-      for (Map.Entry<String, List<Action>> entry : actions.entrySet()) {
-        sb.append(Str.NL).append(entry.getKey()).append(": ");
-        boolean first = true;
-        for (Action action : entry.getValue()) {
-          if (first) {
-            first = false;
-          } else {
-            sb.append(", ");
-          }
-          sb.append(action.toString());
-        }
-      }
+//      for (Map.Entry<String, List<Action>> entry : actions.entrySet()) {
+//        sb.append(Str.NL).append(entry.getKey()).append(": ");
+//        boolean first = true;
+//        for (Action action : entry.getValue()) {
+//          if (first) {
+//            first = false;
+//          } else {
+//            sb.append(", ");
+//          }
+//          sb.append(action.toString());
+//        }
+//      }
+      sb.append(Str.NL).append(actions.toString());
     }
 
     return sb.toString();

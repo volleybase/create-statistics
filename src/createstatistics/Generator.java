@@ -28,6 +28,8 @@ class Generator {
   private static final String TPL_TO_B = "D:/workdir/brueckl-hotvolleys-source/_work/statistics.to.b.html";
   private static final String TPL_SUBST_A = "D:/workdir/brueckl-hotvolleys-source/_work/statistics.subst.a.html";
   private static final String TPL_SUBST_B = "D:/workdir/brueckl-hotvolleys-source/_work/statistics.subst.b.html";
+  private static final String TPL_SERV_A = "D:/workdir/brueckl-hotvolleys-source/_work/statistics.serv.a.html";
+  private static final String TPL_SERV_B = "D:/workdir/brueckl-hotvolleys-source/_work/statistics.serv.b.html";
 
   private static final String HTML_STATS = "D:/workdir/brueckl-hotvolleys-source/uld/statistics3.html";
 
@@ -44,6 +46,8 @@ class Generator {
   private final String tplToB;
   private final String tplSubstA;
   private final String tplSubstB;
+  private final String tplServA;
+  private final String tplServB;
 
   Generator(List<Match> data) {
     this.data = data;
@@ -60,6 +64,8 @@ class Generator {
     tplToB = readFile(TPL_TO_B);
     tplSubstA = readFile(TPL_SUBST_A);
     tplSubstB = readFile(TPL_SUBST_B);
+    tplServA = readFile(TPL_SERV_A);
+    tplServB = readFile(TPL_SERV_B);
   }
 
   private static String readFile(String fn) {
@@ -121,6 +127,11 @@ class Generator {
             lastB = 0,
             idxPt = -1,
             ptA, ptB;
+
+          // 0:0
+          if (null != (action = checkForAction(sp, 0, 0))) {
+            sbPts.append(action);
+          }
 
           while (++idxPt >= 0) {
             boolean any = false;
@@ -243,6 +254,12 @@ class Generator {
 
           case TIMEOUT:
             sbAct.append(action.teamA ? tplToA : tplToB);
+            break;
+
+          case SERVICE:
+            sbAct
+              .append(action.teamA ? tplServA : tplServB)
+              .replace("{{info}}", action.info);
             break;
         }
 
