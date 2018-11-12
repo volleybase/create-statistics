@@ -1,34 +1,95 @@
 package createstatistics;
 
 /**
- * A players info.
- *
- * @author gortonhu
- */
-/**
  * The info of a player.
  *
- * @author gortonhu
+ * @author volleybase
  */
 class Player {
 
+  //<editor-fold defaultstate="collapsed" desc="The fields.">
+  /**
+   * The type of the player.
+   */
   String type;
-  String name;
-  int p1;
-  int m1;
-  int p2;
-  int m2;
-  int p3;
-  int m3;
-  int p4;
-  int m4;
-  int p5;
-  int m5;
-  String pSum;
-  String mSum;
-  String diff;
-  String quot;
 
+  /**
+   * The name of the player.
+   */
+  String name;
+
+  /**
+   * The points of set 1 (-1 if not played).
+   */
+  int p1;
+
+  /**
+   * The failures of set 1 (-1 if not played).
+   */
+  int m1;
+
+  /**
+   * The points of set 2 (-1 if not played).
+   */
+  int p2;
+
+  /**
+   * The failures of set 2 (-1 if not played).
+   */
+  int m2;
+
+  /**
+   * The points of set 3 (-1 if not played).
+   */
+  int p3;
+
+  /**
+   * The failures of set 31 (-1 if not played).
+   */
+  int m3;
+
+  /**
+   * The points of set 4 (-1 if not played).
+   */
+  int p4;
+
+  /**
+   * The failures of set 4 (-1 if not played).
+   */
+  int m4;
+
+  /**
+   * The points of set 5 (-1 if not played).
+   */
+  int p5;
+
+  /**
+   * The failures of set 5 (-1 if not played).
+   */
+  int m5;
+
+  /**
+   * The sum of the points.
+   */
+  String pSum;
+
+  /**
+   * The sum of the failures.
+   */
+  String mSum;
+
+  /**
+   * The points minus the failures.
+   */
+  String diff;
+
+  /**
+   * The quotient of points and failures.
+   */
+  String quot;
+  //</editor-fold>
+
+  //<editor-fold defaultstate="collapsed" desc="Debug.">
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
@@ -44,4 +105,5 @@ class Player {
 
     return sb.toString();
   }
+  //</editor-fold>
 }
