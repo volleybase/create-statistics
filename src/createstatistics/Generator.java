@@ -152,7 +152,7 @@ class Generator {
         int idxSet = 0;
         StringBuilder action;
         StringBuilder sbSets = new StringBuilder();
-        for (SetInfo sp : match.setInfos) {
+        for (SetInfo set : match.setInfos) {
           SB sbSet = new SB(tplPointsSet);
           StringBuilder sbPts = new StringBuilder();
 
@@ -166,56 +166,56 @@ class Generator {
           rotationA = rotationB = 0;
 
           // 0:0
-          if (null != (action = checkForAction(sp, 0, 0))) {
+          if (null != (action = checkForAction(set, 0, 0))) {
             sbPts.append(action);
           }
-          sbPts.append(checkforService(sp, 0, 0, ' '));
+          sbPts.append(checkforService(set, 0, 0, ' '));
 
           while (++idxPt >= 0) {
             boolean any = false;
 
-            if (!sp.startA && idxPt < sp.pointsA.size()) {
+            if (!set.startA && idxPt < set.scoringsA.size()) {
               any = true;
-              ptA = sp.pointsA.get(idxPt);
+              ptA = set.scoringsA.get(idxPt);
               while (lastA < ptA) {
                 SB sbPt = new SB(tplPointA);
                 sbPt.replace("{{point}}", ++lastA);
                 sbPts.append(sbPt.toStr());
 
-                if (null != (action = checkForAction(sp, lastA, lastB))) {
+                if (null != (action = checkForAction(set, lastA, lastB))) {
                   sbPts.append(action);
                 }
-                sbPts.append(checkforService(sp, lastA, lastB, 'A'));
+                sbPts.append(checkforService(set, lastA, lastB, 'A'));
               }
             }
 
-            if (idxPt < sp.pointsB.size()) {
+            if (idxPt < set.scoringsB.size()) {
               any = true;
-              ptB = sp.pointsB.get(idxPt);
+              ptB = set.scoringsB.get(idxPt);
               while (lastB < ptB) {
                 SB sbPt = new SB(tplPointB);
                 sbPt.replace("{{point}}", ++lastB);
                 sbPts.append(sbPt.toStr());
 
-                if (null != (action = checkForAction(sp, lastA, lastB))) {
+                if (null != (action = checkForAction(set, lastA, lastB))) {
                   sbPts.append(action);
                 }
-                sbPts.append(checkforService(sp, lastA, lastB, 'B'));
+                sbPts.append(checkforService(set, lastA, lastB, 'B'));
               }
             }
 
-            if (sp.startA && idxPt < sp.pointsA.size()) {
+            if (set.startA && idxPt < set.scoringsA.size()) {
               any = true;
-              ptA = sp.pointsA.get(idxPt);
+              ptA = set.scoringsA.get(idxPt);
               while (lastA < ptA) {
                 SB sbPt = new SB(tplPointA);
                 sbPt.replace("{{point}}", ++lastA);
                 sbPts.append(sbPt.toStr());
 
-                if (null != (action = checkForAction(sp, lastA, lastB))) {
+                if (null != (action = checkForAction(set, lastA, lastB))) {
                   sbPts.append(action);
                 }
-                sbPts.append(checkforService(sp, lastA, lastB, 'A'));
+                sbPts.append(checkforService(set, lastA, lastB, 'A'));
               }
             }
 
@@ -275,7 +275,7 @@ class Generator {
   }
 //</editor-fold>
 
-//<editor-fold defaultstate="collapsed" desc="Utility functions.">
+  //<editor-fold defaultstate="collapsed" desc="Utility functions.">
   /**
    * Checks if there is an action stored for the current scoring.
    *
@@ -369,7 +369,7 @@ class Generator {
       // first service
       case ' ':
         // check if team A has to do the first serve
-        if (set.lineUpA != null && !set.pointsA.isEmpty() && set.pointsA.get(0) >= 0) {
+        if (set.lineUpA != null && !set.scoringsA.isEmpty() && set.scoringsA.get(0) >= 0) {
           teamToServe = 'A';
           // create code to display
           sb
@@ -378,7 +378,7 @@ class Generator {
         }
 
         // check if team B has to do the first serve
-        if (set.lineUpB != null && !set.pointsB.isEmpty() && set.pointsB.get(0) >= 0) {
+        if (set.lineUpB != null && !set.scoringsB.isEmpty() && set.scoringsB.get(0) >= 0) {
           teamToServe = 'B';
           // create code to display
           sb

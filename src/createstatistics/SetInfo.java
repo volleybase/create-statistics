@@ -90,10 +90,10 @@ class XMap {
 class SetInfo {
 
   //<editor-fold defaultstate="collapsed" desc="The fields.">
-  // the points of team A
-  final List<Integer> pointsA = new ArrayList<>();
-  // the points of team B
-  final List<Integer> pointsB = new ArrayList<>();
+  // the scoring of team A
+  final List<Integer> scoringsA = new ArrayList<>();
+  // the scoring of team B
+  final List<Integer> scoringsB = new ArrayList<>();
   // true if team A starts with serving, otherwise false
   boolean startA;
   // the actions store
@@ -123,7 +123,7 @@ class SetInfo {
    * @return The points info itself.
    */
   SetInfo addA(int points) {
-    pointsA.add(points);
+    scoringsA.add(points);
     return this;
   }
 
@@ -134,7 +134,7 @@ class SetInfo {
    * @return The points info itself.
    */
   SetInfo addB(int points) {
-    pointsB.add(points);
+    scoringsB.add(points);
     return this;
   }
 
@@ -318,13 +318,13 @@ class SetInfo {
     }
 
     // points team B
-    for (Integer pt : pointsA) {
+    for (Integer pt : scoringsA) {
       sb.append(fmt(pt)).append(" ");
     }
 
     // points team B
     sb.append(Str.NL);
-    for (Integer pt : pointsB) {
+    for (Integer pt : scoringsB) {
       sb.append(fmt(pt)).append(" ");
     }
 
