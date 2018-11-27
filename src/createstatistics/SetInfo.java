@@ -102,6 +102,8 @@ class SetInfo {
   ArrayList<String> lineUpA = null;
   // the line up of team A
   ArrayList<String> lineUpB = null;
+  // flag for decision set
+  boolean decision = true;
   //</editor-fold>
 
   //<editor-fold defaultstate="collapsed" desc="The constructor.">
@@ -146,7 +148,19 @@ class SetInfo {
    */
   SetInfo add(String actioninfo) {
     String[] parts = actioninfo.split(":");
-    if (parts.length >= 3) {
+    if (parts.length == 1) {
+
+      // first part might be a key
+      switch (parts[0]) {
+        case "D":
+          decision = true;
+          break;
+
+        default:
+          err(actioninfo);
+      }
+
+    } else if (parts.length >= 3) {
 
       boolean found = false;
       String key;

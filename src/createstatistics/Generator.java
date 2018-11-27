@@ -362,6 +362,10 @@ class Generator {
     if (Math.max(lastA, lastB) >= 25 && Math.abs(lastA - lastB) >= 2) {
       return "";
     }
+    // check for end of decision set
+    if (set.decision && Math.max(lastA, lastB) >= 15 && Math.abs(lastA - lastB) >= 2) {
+      return "";
+    }
 
     SB sb = new SB();
     switch (scoringTeam) {
