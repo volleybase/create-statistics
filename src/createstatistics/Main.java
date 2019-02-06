@@ -198,9 +198,10 @@ public class Main {
 
       // read the points
       SetInfo set;
+      int nr = 0;
       do {
         // try to read the optional points
-        set = readSetInfos(startRow, col);
+        set = readSetInfos(++nr, startRow, col);
         if (set != null) {
 
           // try to read the optional actions
@@ -304,11 +305,12 @@ public class Main {
   /**
    * Reads the infos of a set.
    *
+   * @param nr The number of the set (usually 1 - 5).
    * @param row The row where to start reading.
    * @param col The column where to start reading.
    * @return The data.
    */
-  static SetInfo readSetInfos(int row, int col) {
+  static SetInfo readSetInfos(int nr, int row, int col) {
 
     // result
     SetInfo set = null;
@@ -323,7 +325,7 @@ public class Main {
       if (ptA >= 0 || ptB >= 0) {
 
         // create data
-        set = new SetInfo(ptA >= 0);
+        set = new SetInfo(nr, ptA >= 0);
         // add first point info
         set.addA(ptA);
         set.addB(ptB);

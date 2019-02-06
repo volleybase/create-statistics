@@ -1,6 +1,8 @@
 package createstatistics;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -11,12 +13,7 @@ import java.util.List;
 class XMap {
 
   //<editor-fold defaultstate="collapsed" desc="The fields.">
-  // the keys
-  private final List<String> keys = new ArrayList<>();
-  // the actions
-  private final List<SetAction> actions = new ArrayList<>();
-  // the index of the current item on iterating through the content
-  private int index = 0;
+  private final HashMap<String, List<SetAction>> data = new HashMap<>();
   //</editor-fold>
 
   //<editor-fold defaultstate="collapsed" desc="The methods.">
@@ -27,8 +24,16 @@ class XMap {
    * @param action The action.
    */
   void add(String key, SetAction action) {
-    keys.add(key);
-    actions.add(action);
+    List<SetAction> acts;
+
+    if (data.containsKey(key)) {
+      acts = data.get(key);
+    } else {
+      acts = new ArrayList<>();
+      data.put(key, acts);
+    }
+
+    acts.add(action);
   }
 
   /**
@@ -37,28 +42,19 @@ class XMap {
    * @return True if empty, otherwise false.
    */
   boolean isEmpty() {
-    return keys.isEmpty();
+    return data.isEmpty();
   }
 
   /**
-   * Resets the iteration index.
-   */
-  void reset() {
-    index = 0;
-  }
-
-  /**
-   * Returns the next action if the key fits.
+   * Returns the actions for the given key.
    *
    * @param key The key of the next action to handle.
-   * @return The next action, or null if there is not any action for a given
-   * key.
+   * @return The actions, or null if there is not any action for a given key.
    */
-  SetAction next(String key) {
+  List<SetAction> get(String key) {
 
-    // if action for key found: return it, then increase index
-    if (index < keys.size() && keys.get(index).equals(key)) {
-      return actions.get(index++);
+    if (data.containsKey(key)) {
+      return Collections.unmodifiableList(data.get(key));
     }
 
     // nothing found
@@ -70,11 +66,25 @@ class XMap {
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
+    ArrayList<String> keys = new ArrayList<>(data.keySet());
+    Collections.sort(keys);
+
     for (int i = 0; i < keys.size(); ++i) {
       if (i > 0) {
         sb.append(Str.NL);
       }
-      sb.append(keys.get(i)).append(": ").append(actions.get(i));
+      sb.append(keys.get(i)).append(": ");
+
+      List<SetAction> acts = data.get(keys.get(i));
+      boolean first = true;
+      for (SetAction act : acts) {
+        if (first) {
+          first = false;
+        } else {
+          sb.append("; ");
+        }
+        sb.append(act);
+      }
     }
 
     return sb.toString();
@@ -90,6 +100,8 @@ class XMap {
 class SetInfo {
 
   //<editor-fold defaultstate="collapsed" desc="The fields.">
+  // The number of the set.
+  final int nr;
   // the scoring of team A
   final List<Integer> scoringsA = new ArrayList<>();
   // the scoring of team B
@@ -103,16 +115,18 @@ class SetInfo {
   // the line up of team A
   ArrayList<String> lineUpB = null;
   // flag for decision set
-  boolean decision = true;
+  boolean decision = false;
   //</editor-fold>
 
   //<editor-fold defaultstate="collapsed" desc="The constructor.">
   /**
    * Creates the infos of a set.
    *
+   * @param nr The number of the set (usually 1 - 5).
    * @param startA Should team A start with service?
    */
-  SetInfo(boolean startA) {
+  SetInfo(int nr, boolean startA) {
+    this.nr = nr;
     this.startA = startA;
   }
   //</editor-fold>
@@ -254,24 +268,24 @@ class SetInfo {
   List<SetAction> actions(int a, int b) {
 
     List<SetAction> acts = new ArrayList<>();
-    SetAction action;
-    do {
-      String key = a + ":" + b;
-      action = actions.next(key);
-      if (action == null) {
-        key = "A:" + a;
-        action = actions.next(key);
 
-        if (action == null) {
-          key = "B:" + b;
-          action = actions.next(key);
-        }
-      }
+    String key = a + ":" + b;
+    List<SetAction> acts0 = actions.get(key);
+    if (acts0 != null) {
+      acts.addAll(acts0);
+    }
 
-      if (action != null) {
-        acts.add(action);
-      }
-    } while (action != null);
+    key = "A:" + a;
+    acts0 = actions.get(key);
+    if (acts0 != null) {
+      acts.addAll(acts0);
+    }
+
+    key = "B:" + b;
+    acts0 = actions.get(key);
+    if (acts0 != null) {
+      acts.addAll(acts0);
+    }
 
     return acts.size() > 0 ? acts : null;
   }
@@ -301,6 +315,7 @@ class SetInfo {
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
+    sb.append("Satz: ").append(nr).append(Str.NL);
 
     if (lineUpA != null) {
 

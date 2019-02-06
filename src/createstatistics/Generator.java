@@ -17,32 +17,33 @@ import java.util.List;
 class Generator {
 
   //<editor-fold defaultstate="collapsed" desc="The fields.">
+  private static final String TPL_DIR = "D:/workdir/brueckl-hotvolleys-source/_work/statistics/";
   // file name of main html template
-  private static final String TPL_STATISTICS = "D:/workdir/brueckl-hotvolleys-source/_work/statistics.html";
+  private static final String TPL_STATISTICS = "statistics.html";
   // file name of html fragment of a match
-  private static final String TPL_MATCH = "D:/workdir/brueckl-hotvolleys-source/_work/statistics.match.html";
+  private static final String TPL_MATCH = "statistics.match.html";
   // file name of html fragment of a plyer's info
-  private static final String TPL_PLAYER = "D:/workdir/brueckl-hotvolleys-source/_work/statistics.player.html";
+  private static final String TPL_PLAYER = "statistics.player.html";
   // file name of html fragment of points info
-  private static final String TPL_POINTS = "D:/workdir/brueckl-hotvolleys-source/_work/statistics.points.html";
+  private static final String TPL_POINTS = "statistics.points.html";
   // file name of html fragment of a set of the points info
-  private static final String TPL_POINTS_SET = "D:/workdir/brueckl-hotvolleys-source/_work/statistics.set.html";
+  private static final String TPL_POINTS_SET = "statistics.set.html";
   // file name of html fragment of a point for team A
-  private static final String TPL_POINT_A = "D:/workdir/brueckl-hotvolleys-source/_work/statistics.point.a.html";
+  private static final String TPL_POINT_A = "statistics.point.a.html";
   // file name of html fragment of a point for team B
-  private static final String TPL_POINT_B = "D:/workdir/brueckl-hotvolleys-source/_work/statistics.point.b.html";
+  private static final String TPL_POINT_B = "statistics.point.b.html";
   // file name of html fragment of time out of team A
-  private static final String TPL_TO_A = "D:/workdir/brueckl-hotvolleys-source/_work/statistics.to.a.html";
+  private static final String TPL_TO_A = "statistics.to.a.html";
   // file name of html fragment of time out of team B
-  private static final String TPL_TO_B = "D:/workdir/brueckl-hotvolleys-source/_work/statistics.to.b.html";
+  private static final String TPL_TO_B = "statistics.to.b.html";
   // file name of html fragment of a substitution of team A
-  private static final String TPL_SUBST_A = "D:/workdir/brueckl-hotvolleys-source/_work/statistics.subst.a.html";
+  private static final String TPL_SUBST_A = "statistics.subst.a.html";
   // file name of html fragment of a substitution of team B
-  private static final String TPL_SUBST_B = "D:/workdir/brueckl-hotvolleys-source/_work/statistics.subst.b.html";
+  private static final String TPL_SUBST_B = "statistics.subst.b.html";
   // file name of html fragment of a service of team A
-  private static final String TPL_SERV_A = "D:/workdir/brueckl-hotvolleys-source/_work/statistics.serv.a.html";
+  private static final String TPL_SERV_A = "statistics.serv.a.html";
   // file name of html fragment of a service of team B
-  private static final String TPL_SERV_B = "D:/workdir/brueckl-hotvolleys-source/_work/statistics.serv.b.html";
+  private static final String TPL_SERV_B = "statistics.serv.b.html";
 
   // the file name of the target file to write
   private static final String HTML_STATS = "D:/workdir/brueckl-hotvolleys-source/uld/statistics3.html";
@@ -96,20 +97,20 @@ class Generator {
     this.data = data;
 
     // load the template files
-    tplStatistics = readFile(TPL_STATISTICS);
-    tplMatch = readFile(TPL_MATCH);
-    tplPlayer = readFile(TPL_PLAYER);
+    tplStatistics = readTplFile(TPL_STATISTICS);
+    tplMatch = readTplFile(TPL_MATCH);
+    tplPlayer = readTplFile(TPL_PLAYER);
 
-    tplPoints = readFile(TPL_POINTS);
-    tplPointsSet = readFile(TPL_POINTS_SET);
-    tplPointA = readFile(TPL_POINT_A);
-    tplPointB = readFile(TPL_POINT_B);
-    tplToA = readFile(TPL_TO_A);
-    tplToB = readFile(TPL_TO_B);
-    tplSubstA = readFile(TPL_SUBST_A);
-    tplSubstB = readFile(TPL_SUBST_B);
-    tplServA = readFile(TPL_SERV_A);
-    tplServB = readFile(TPL_SERV_B);
+    tplPoints = readTplFile(TPL_POINTS);
+    tplPointsSet = readTplFile(TPL_POINTS_SET);
+    tplPointA = readTplFile(TPL_POINT_A);
+    tplPointB = readTplFile(TPL_POINT_B);
+    tplToA = readTplFile(TPL_TO_A);
+    tplToB = readTplFile(TPL_TO_B);
+    tplSubstA = readTplFile(TPL_SUBST_A);
+    tplSubstB = readTplFile(TPL_SUBST_B);
+    tplServA = readTplFile(TPL_SERV_A);
+    tplServB = readTplFile(TPL_SERV_B);
   }
   //</editor-fold>
 
@@ -173,6 +174,10 @@ class Generator {
 
           while (++idxPt >= 0) {
             boolean any = false;
+
+            if (lastA == 17) {
+              lastA = lastA;
+            }
 
             if (!set.startA && idxPt < set.scoringsA.size()) {
               any = true;
@@ -319,7 +324,7 @@ class Generator {
             if (lineUp != null) {
               int pos = lineUp.indexOf(infos[1]);
               if (pos == -1) {
-                throw new IllegalArgumentException("Cannot find player " + infos[1] + " for substitution!");
+                throw new IllegalArgumentException("Cannot find player " + infos[1] + " for substitution in set " + set.nr + " (" + action.key + ")!");
               }
               lineUp.set(pos, infos[0]);
             }
@@ -441,10 +446,10 @@ class Generator {
    * @param filename The file name.
    * @return The file content.
    */
-  private static String readFile(String filename) {
+  private static String readTplFile(String filename) {
     StringBuilder sb = new StringBuilder();
     Charset charset = Charset.forName("UTF-8");
-    File file = new File(filename);
+    File file = new File(TPL_DIR + filename);
     try (BufferedReader reader = Files.newBufferedReader(file.toPath(), charset)) {
       String line;
       while ((line = reader.readLine()) != null) {
