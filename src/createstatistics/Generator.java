@@ -45,9 +45,6 @@ class Generator {
   // file name of html fragment of a service of team B
   private static final String TPL_SERV_B = "statistics.serv.b.html";
 
-  // the file name of the target file to write
-  private static final String HTML_STATS = "D:/workdir/brueckl-hotvolleys-source/uld/statistics3.html";
-
   // the complete data - the internal model
   private final List<Match> data;
 
@@ -85,8 +82,8 @@ class Generator {
   private int rotationB = 0;
   // current team to serve(' ' - at start up of each set it is necessary to decide)
   private char teamToServe = ' ';
-  //</editor-fold>
 
+  //</editor-fold>
   //<editor-fold defaultstate="collapsed" desc="The constructor.">
   /**
    * Creates the output generator.
@@ -118,13 +115,23 @@ class Generator {
   /**
    * Creates the resulting statistics file.
    */
-  void create() {
+  void create(String target) {
+    String LIN2 = "==========================================================";
+    String LIN = "----------------------------------------------------------";
 
     // handle each match and collect their infos
     StringBuilder matches = new StringBuilder();
     List<String> ids = new ArrayList<>();
     int idxMatch = 0;
     for (Match match : data) {
+
+      // debug output of read match
+      System.out.println(LIN2);
+      System.out.println("create match: " + match.date + " " + match.info);
+      if (match.date.equals("05.Feb")) {
+        System.out.println(LIN2);
+        System.out.println(LIN2);
+      }
 
       // create infos about players
       StringBuilder sbPlayers = new StringBuilder();
@@ -154,6 +161,10 @@ class Generator {
         StringBuilder action;
         StringBuilder sbSets = new StringBuilder();
         for (SetInfo set : match.setInfos) {
+
+          System.out.println(LIN);
+          System.out.println("Satz: " + set.nr);
+
           SB sbSet = new SB(tplPointsSet);
           StringBuilder sbPts = new StringBuilder();
 
@@ -175,7 +186,7 @@ class Generator {
           while (++idxPt >= 0) {
             boolean any = false;
 
-            if (lastA == 17) {
+            if (lastA == 13) {
               lastA = lastA;
             }
 
@@ -271,14 +282,15 @@ class Generator {
     // write resulting file
     Charset charset = Charset.forName("UTF-8");
     String str = result.toString();
-    File file = new File(HTML_STATS);
+    // File file = new File(HTML_STATS);
+    File file = new File(target);
     try (BufferedWriter writer = Files.newBufferedWriter(file.toPath(), charset)) {
       writer.write(str, 0, str.length());
     } catch (IOException x) {
       System.err.format("IOException: %s%n", x);
     }
   }
-//</editor-fold>
+  //</editor-fold>
 
   //<editor-fold defaultstate="collapsed" desc="Utility functions.">
   /**

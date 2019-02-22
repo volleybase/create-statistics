@@ -29,19 +29,24 @@ public class Main {
 
   //<editor-fold defaultstate="collapsed" desc="The fields.">
   // statistics source file
-  private static final String FN = "D:/workdir/brueckl-hotvolleys-source/_work/Statistik.xlsx";
+  private static final String FN_SOURCE_BR3 = "D:/workdir/brueckl-hotvolleys-source/_work/Statistik.xlsx";
+  private static final String FN_SOURCE_U17 = "D:/workdir/brueckl-hotvolleys-source/_work/Statistik17.xlsx";
   // the sheet with the statistics
   private static final String SHEET_NAME = "Spiele";
+
+  // the file names of the target files to write
+  private static final String HTML_STATS_BR3 = "D:/workdir/brueckl-hotvolleys-source/uld/statistics3.html";
+  private static final String HTML_STATS_U17 = "D:/workdir/brueckl-hotvolleys-source/u17/statistics.html";
 
   // POI - formula evaluator
   private static FormulaEvaluator evaluator;
   // POI - a sheet
   private static XSSFSheet SHEET;
   // the current row to read
-  private static int ROW = 0;
+  private static int ROW;
 
   // the internal data model
-  private static final List<Match> DATA = new ArrayList<>();
+  private static List<Match> DATA;
   //</editor-fold>
 
   /**
@@ -50,6 +55,16 @@ public class Main {
    * @param args the command line arguments
    */
   public static void main(String[] args) {
+    createStats(FN_SOURCE_BR3, HTML_STATS_BR3);
+    createStats(FN_SOURCE_U17, HTML_STATS_U17);
+  }
+
+  private static void createStats(String source, String target) {
+
+    // init data
+    ROW = 0;
+    DATA = new ArrayList<>();
+
     // to read from file
     FileInputStream fileInput = null;
     // POI - the workbook
@@ -58,7 +73,8 @@ public class Main {
     try {
       //<editor-fold defaultstate="collapsed" desc="Open the sheet for reading.">
       // open file
-      fileInput = new FileInputStream(new File(FN));
+      // fileInput = new FileInputStream(new File(FN));
+      fileInput = new FileInputStream(new File(source));
 
       // get workbook from file content, prepare formula evaluator
       workbook = new XSSFWorkbook(fileInput);
@@ -85,7 +101,7 @@ public class Main {
 
       // generate of the output
       Generator generator = new Generator(DATA);
-      generator.create();
+      generator.create(target);
 
     } catch (FileNotFoundException ex) {
       Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
