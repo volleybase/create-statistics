@@ -92,8 +92,13 @@ class SB {
   SB replace(String search, String val) {
 
     try {
-      int pos = sb.indexOf(search);
-      sb.replace(pos, pos + search.length(), val);
+      int pos;
+      do {
+        pos = sb.indexOf(search);
+        if (pos >= 0) {
+          sb.replace(pos, pos + search.length(), val);
+        }
+      } while (pos >= 0);
     } catch (StringIndexOutOfBoundsException ex) {
       System.err.println(ex);
     }

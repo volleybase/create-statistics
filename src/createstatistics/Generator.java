@@ -82,8 +82,8 @@ class Generator {
   private int rotationB = 0;
   // current team to serve(' ' - at start up of each set it is necessary to decide)
   private char teamToServe = ' ';
-
   //</editor-fold>
+
   //<editor-fold defaultstate="collapsed" desc="The constructor.">
   /**
    * Creates the output generator.
@@ -115,7 +115,7 @@ class Generator {
   /**
    * Creates the resulting statistics file.
    */
-  void create(String target) {
+  void create(String target, String back) {
     String LIN2 = "==========================================================";
     String LIN = "----------------------------------------------------------";
 
@@ -186,7 +186,7 @@ class Generator {
           while (++idxPt >= 0) {
             boolean any = false;
 
-            if (lastA == 13) {
+            if (lastA == 14) {
               lastA = lastA;
             }
 
@@ -267,6 +267,9 @@ class Generator {
 
     // inject matches into main html template
     SB result = new SB(tplStatistics);
+    // set back links
+    result.replace("{{back}}", back);
+
     StringBuilder sb = new StringBuilder();
     for (String id : ids) {
       if (sb.length() > 0) {
