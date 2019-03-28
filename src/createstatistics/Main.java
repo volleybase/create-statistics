@@ -32,12 +32,11 @@ public class Main {
   private static final String FN_SOURCE_BR3 = "D:/workdir/brueckl-hotvolleys-source/_work/Statistik.xlsx";
   private static final String FN_SOURCE_U17 = "D:/workdir/brueckl-hotvolleys-source/_work/Statistik17.xlsx";
   private static final String FN_SOURCE_U15AR = "D:/workdir/brueckl-hotvolleys-source/_work/Statistik15AR.xlsx";
-  // the sheet with the statistics
-  private static final String SHEET_NAME = "Spiele";
 
   // the file names of the target files to write
   private static final String HTML_STATS_BR3 = "D:/workdir/brueckl-hotvolleys-source/uld/statistics3.html";
   private static final String HTML_STATS_U15AR = "D:/workdir/brueckl-hotvolleys-source/uld/statistics3AR.html";
+  private static final String HTML_STATS_U15FD = "D:/workdir/brueckl-hotvolleys-source/uld/statistics4FD.html";
   private static final String HTML_STATS_U17 = "D:/workdir/brueckl-hotvolleys-source/u17/statistics.html";
 
   // POI - formula evaluator
@@ -57,12 +56,13 @@ public class Main {
    * @param args the command line arguments
    */
   public static void main(String[] args) {
-    // createStats(FN_SOURCE_BR3, HTML_STATS_BR3, "br3g");
-    // createStats(FN_SOURCE_U17, HTML_STATS_U17, "u17");
-    createStats(FN_SOURCE_U15AR, HTML_STATS_U15AR, "br3");
+    // createStats(FN_SOURCE_BR3, HTML_STATS_BR3, "br3g", "Spiele");
+    // createStats(FN_SOURCE_U17, HTML_STATS_U17, "u17", "Spiele");
+    // createStats(FN_SOURCE_U15AR, HTML_STATS_U15AR, "br3", "Spiele");
+    createStats(FN_SOURCE_U15AR, HTML_STATS_U15FD, "br4", "SpieleUL");
   }
 
-  private static void createStats(String source, String target, String back) {
+  private static void createStats(String source, String target, String back, String sheet) {
 
     // init data
     ROW = 0;
@@ -84,9 +84,9 @@ public class Main {
       evaluator = workbook.getCreationHelper().createFormulaEvaluator();
 
       // get sheet
-      SHEET = workbook.getSheet(SHEET_NAME);
+      SHEET = workbook.getSheet(sheet);
       if (SHEET == null) {
-        Logger.getLogger(Main.class.getName()).log(Level.SEVERE, "Cannot find sheet " + SHEET_NAME + "!");
+        Logger.getLogger(Main.class.getName()).log(Level.SEVERE, "Cannot find sheet " + sheet + "!");
         workbook.close();
         fileInput.close();
         return;
