@@ -60,8 +60,8 @@ public class Main {
     // createStats(FN_SOURCE_BR3, HTML_STATS_BR3, "br3g", "Spiele");
     // createStats(FN_SOURCE_U17, HTML_STATS_U17, "u17", "Spiele");
 
-    createStats(FN_SOURCE_U15AR, HTML_STATS_MPO, "br2", "SpieleMPO");
-    // createStats(FN_SOURCE_U15AR, HTML_STATS_U15AR, "br3", "SpieleAR");
+    // createStats(FN_SOURCE_U15AR, HTML_STATS_MPO, "br2", "SpieleMPO");
+    createStats(FN_SOURCE_U15AR, HTML_STATS_U15AR, "br3", "SpieleAR");
     // createStats(FN_SOURCE_U15AR, HTML_STATS_U15FD, "br4", "SpieleUL");
   }
 
