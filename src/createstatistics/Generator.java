@@ -17,6 +17,10 @@ import java.util.List;
 class Generator {
 
   //<editor-fold defaultstate="collapsed" desc="The fields.">
+  private static final String LIN2 = "==========================================================";
+  private static final String LIN = "----------------------------------------------------------";
+  private static final String LINERR = ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>";
+
   private static final String TPL_DIR = "D:/workdir/brueckl-hotvolleys-source/_work/statistics/";
   // file name of main html template
   private static final String TPL_STATISTICS = "statistics.html";
@@ -82,6 +86,8 @@ class Generator {
   private int rotationB = 0;
   // current team to serve(' ' - at start up of each set it is necessary to decide)
   private char teamToServe = ' ';
+  // the flag to force end of set
+  private boolean endOfSet;
   //</editor-fold>
 
   //<editor-fold defaultstate="collapsed" desc="The constructor.">
@@ -115,14 +121,12 @@ class Generator {
   /**
    * Creates the resulting statistics file.
    */
-  void create(String target, String back) {
-    String LIN2 = "==========================================================";
-    String LIN = "----------------------------------------------------------";
-
+  void create(String target, String targetDia, String back) {
     // handle each match and collect their infos
     StringBuilder matches = new StringBuilder();
     List<String> ids = new ArrayList<>();
     int idxMatch = 0;
+    json.Array diaData = new json.Array();
     for (Match match : data) {
 
       // debug output of read match
@@ -132,6 +136,12 @@ class Generator {
         System.out.println(LIN2);
         System.out.println(LIN2);
       }
+
+      json.Object diaMatch = new json.Object();
+      diaData.add(diaMatch);
+      diaMatch.add("date", match.date);
+      // diaMatch.add("time", "");
+      diaMatch.add("info", match.info);
 
       // create infos about players
       StringBuilder sbPlayers = new StringBuilder();
@@ -165,6 +175,12 @@ class Generator {
           System.out.println(LIN);
           System.out.println("Satz: " + set.nr);
 
+          // create and add diagram data of current set
+          json.Object diaSet = createDiaSet(set);
+          diaMatch.add("set" + set.nr, diaSet);
+          json.Object diaActions = new json.Object();
+          diaSet.add("actions", diaActions);
+
           SB sbSet = new SB(tplPointsSet);
           StringBuilder sbPts = new StringBuilder();
 
@@ -176,17 +192,20 @@ class Generator {
           // reset team to serve and rotations
           teamToServe = ' ';
           rotationA = rotationB = 0;
+          endOfSet = false;
 
           // 0:0
-          if (null != (action = checkForAction(set, 0, 0))) {
+          if (null != (action = checkForAction(set, 0, 0, diaActions))) {
             sbPts.append(action);
           }
-          sbPts.append(checkforService(set, 0, 0, ' '));
+          if (!endOfSet) {
+            sbPts.append(checkforService(set, 0, 0, ' '));
+          }
 
-          while (++idxPt >= 0) {
+          while (++idxPt >= 0 && !endOfSet) {
             boolean any = false;
 
-            if (lastA == 14) {
+            if (lastA == 23) {
               lastA = lastA;
             }
 
@@ -198,10 +217,12 @@ class Generator {
                 sbPt.replace("{{point}}", ++lastA);
                 sbPts.append(sbPt.toStr());
 
-                if (null != (action = checkForAction(set, lastA, lastB))) {
+                if (null != (action = checkForAction(set, lastA, lastB, diaActions))) {
                   sbPts.append(action);
                 }
-                sbPts.append(checkforService(set, lastA, lastB, 'A'));
+                if (!endOfSet) {
+                  sbPts.append(checkforService(set, lastA, lastB, 'A'));
+                }
               }
             }
 
@@ -213,10 +234,12 @@ class Generator {
                 sbPt.replace("{{point}}", ++lastB);
                 sbPts.append(sbPt.toStr());
 
-                if (null != (action = checkForAction(set, lastA, lastB))) {
+                if (null != (action = checkForAction(set, lastA, lastB, diaActions))) {
                   sbPts.append(action);
                 }
-                sbPts.append(checkforService(set, lastA, lastB, 'B'));
+                if (!endOfSet) {
+                  sbPts.append(checkforService(set, lastA, lastB, 'B'));
+                }
               }
             }
 
@@ -228,10 +251,12 @@ class Generator {
                 sbPt.replace("{{point}}", ++lastA);
                 sbPts.append(sbPt.toStr());
 
-                if (null != (action = checkForAction(set, lastA, lastB))) {
+                if (null != (action = checkForAction(set, lastA, lastB, diaActions))) {
                   sbPts.append(action);
                 }
-                sbPts.append(checkforService(set, lastA, lastB, 'A'));
+                if (!endOfSet) {
+                  sbPts.append(checkforService(set, lastA, lastB, 'A'));
+                }
               }
             }
 
@@ -292,6 +317,14 @@ class Generator {
     } catch (IOException x) {
       System.err.format("IOException: %s%n", x);
     }
+
+    str = diaData.stringify();
+    file = new File(targetDia);
+    try (BufferedWriter writer = Files.newBufferedWriter(file.toPath(), charset)) {
+      writer.write(str, 0, str.length());
+    } catch (IOException x) {
+      System.err.format("IOException: %s%n", x);
+    }
   }
   //</editor-fold>
 
@@ -305,7 +338,7 @@ class Generator {
    * @return The code to display the actions for the current scoring (might be
    * empty...).
    */
-  private StringBuilder checkForAction(SetInfo set, int ptA, int ptB) {
+  private StringBuilder checkForAction(SetInfo set, int ptA, int ptB, json.Object diaActions) {
     StringBuilder result = null;
 
     // get actions
@@ -314,6 +347,8 @@ class Generator {
 
       // init buffer for result
       result = new StringBuilder();
+      json.Array diaActs = new json.Array();
+      diaActions.add(ptA + ":" + ptB, diaActs);
 
       // handle each action
       for (SetAction action : actions) {
@@ -323,6 +358,10 @@ class Generator {
 
         // what action type
         switch (action.type) {
+
+          case END_OF_SET:
+            endOfSet = true;
+            return null;
 
           case SUBSTITUTION:
             // create info
@@ -339,15 +378,21 @@ class Generator {
             if (lineUp != null) {
               int pos = lineUp.indexOf(infos[1]);
               if (pos == -1) {
-                throw new IllegalArgumentException("Cannot find player " + infos[1] + " for substitution in set " + set.nr + " (" + action.key + ")!");
+                //throw new IllegalArgumentException("Cannot find player " + infos[1] + " for substitution in set " + set.nr + " (" + action.key + ")!");
+                System.out.println(LINERR);
+                System.out.println("Cannot find player " + infos[1] + " for substitution in set " + set.nr + " (" + action.key + ")!");
+              } else {
+                lineUp.set(pos, infos[0]);
               }
-              lineUp.set(pos, infos[0]);
             }
+
+            diaActs.add((action.teamA ? "W" : "w") + ":" + action.info);
             break;
 
           case TIMEOUT:
             // create info
             sbAct.append(action.teamA ? tplToA : tplToB);
+            diaActs.add(action.teamA ? "T" : "t");
             break;
 
           case SERVICE:
@@ -475,6 +520,54 @@ class Generator {
     }
 
     return sb.toString();
+  }
+  //</editor-fold>
+
+  //<editor-fold defaultstate="collapsed" desc="Diagram functions.">
+  /**
+   * Creates the diagram info of a set.
+   *
+   * @param set The set info.
+   * @return The diagram info.
+   */
+  private static json.Object createDiaSet(SetInfo set) {
+    json.Object diaSet = new json.Object();
+    diaSet.add("service", set.startA ? "a" : "b");
+
+    diaSet.add("a", createDiaInfo(set.lineUpA, set.scoringsA));
+    diaSet.add("b", createDiaInfo(set.lineUpB, set.scoringsB));
+
+    return diaSet;
+  }
+
+  /**
+   * Creates the diagram info of a team.
+   *
+   * @param lineUp The line up.
+   * @param scorings The scoring.
+   * @return The diagram info of a team.
+   */
+  private static json.Object createDiaInfo(List<String> lineUp, List<Integer> scorings) {
+
+    json.Object diaInfo = new json.Object();
+
+    // lineup
+    json.Array luA = new json.Array();
+    diaInfo.add("lineup", luA);
+    if (lineUp != null && !lineUp.isEmpty()) {
+      for (String per : lineUp) {
+        luA.add(per);
+      }
+    }
+
+    // points
+    json.Array points = new json.Array();
+    diaInfo.add("points", points);
+    for (int pt : scorings) {
+      points.add(pt);
+    }
+
+    return diaInfo;
   }
   //</editor-fold>
 }

@@ -39,6 +39,15 @@ public class Main {
   private static final String HTML_STATS_U15FD = "D:/workdir/brueckl-hotvolleys-source/uld/statistics4FD.html";
   private static final String HTML_STATS_U17 = "D:/workdir/brueckl-hotvolleys-source/u17/statistics.html";
   private static final String HTML_STATS_MPO = "D:/workdir/brueckl-hotvolleys-source/lld/statistics.html";
+  private static final String HTML_STATS_U15PN = "D:/workdir/brueckl-hotvolleys-source/u15/statistics15pn.html";
+
+  // diagram data output
+  private static final String JSON_DIA_BR3 = "D:/workdir/vb-statsone-backup/_backup/i%20selba2/userdata/gamesBR3.json";
+  private static final String JSON_DIA_U15AR = "D:/workdir/vb-statsone-backup/_backup/i%20selba2/userdata/gamesAR.json";
+  private static final String JSON_DIA_U15FD = "D:/workdir/vb-statsone-backup/_backup/i%20selba2/userdata/gamesFD.json";
+  private static final String JSON_DIA_U15PN = "D:/workdir/vb-statsone-backup/_backup/i%20selba2/userdata/games15pn.json";
+  private static final String JSON_DIA_U17 = "D:/workdir/vb-statsone-backup/_backup/i%20selba2/userdata/games17.json";
+  private static final String JSON_DIA_MPO = "D:/workdir/vb-statsone-backup/_backup/i%20selba2/userdata/gamesMPO.json";
 
   // POI - formula evaluator
   private static FormulaEvaluator evaluator;
@@ -57,15 +66,16 @@ public class Main {
    * @param args the command line arguments
    */
   public static void main(String[] args) {
-    // createStats(FN_SOURCE_BR3, HTML_STATS_BR3, "br3g", "Spiele");
-    // createStats(FN_SOURCE_U17, HTML_STATS_U17, "u17", "Spiele");
-
-    // createStats(FN_SOURCE_U15AR, HTML_STATS_MPO, "br2", "SpieleMPO");
-    // createStats(FN_SOURCE_U15AR, HTML_STATS_U15AR, "br3", "SpieleAR");
-    createStats(FN_SOURCE_U15AR, HTML_STATS_U15FD, "br4", "SpieleUL");
+//    createStats(FN_SOURCE_BR3, HTML_STATS_BR3, JSON_DIA_BR3, "br3g", "Spiele");
+//    createStats(FN_SOURCE_U17, HTML_STATS_U17, JSON_DIA_U17, "u17", "Spiele");
+//
+//    createStats(FN_SOURCE_U15AR, HTML_STATS_MPO, JSON_DIA_MPO, "br2", "SpieleMPO");
+//    createStats(FN_SOURCE_U15AR, HTML_STATS_U15AR, JSON_DIA_U15AR, "br3", "SpieleAR");
+//    createStats(FN_SOURCE_U15AR, HTML_STATS_U15FD, JSON_DIA_U15FD, "br4", "SpieleUL");
+    createStats(FN_SOURCE_U15AR, HTML_STATS_U15PN, JSON_DIA_U15PN, "u15pn", "Pordenone");
   }
 
-  private static void createStats(String source, String target, String back, String sheet) {
+  private static void createStats(String source, String target, String targetDia, String back, String sheet) {
 
     // init data
     ROW = 0;
@@ -107,7 +117,7 @@ public class Main {
 
       // generate of the output
       Generator generator = new Generator(DATA);
-      generator.create(target, back);
+      generator.create(target, targetDia, back);
 
     } catch (FileNotFoundException ex) {
       Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);

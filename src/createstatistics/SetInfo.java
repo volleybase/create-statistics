@@ -247,6 +247,13 @@ class SetInfo {
             add(new SetAction(key, SetAction.Type.SUBSTITUTION, parts[2].equals("W"), parts[3]));
             break;
 
+          case "End":
+            if (parts.length != 3) {
+              err(actioninfo);
+            }
+            add(new SetAction(key, SetAction.Type.END_OF_SET, true));
+            break;
+
           default:
             err(actioninfo);
         }

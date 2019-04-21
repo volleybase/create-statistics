@@ -14,6 +14,10 @@ class SetAction {
   enum Type {
 
     /**
+     * To force end of set (e.g: tournament games might end at 25).
+     */
+    END_OF_SET,
+    /**
      * L, l: line up/Aufstellung
      */
     LINEUP,
