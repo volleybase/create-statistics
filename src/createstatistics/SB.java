@@ -32,12 +32,35 @@ class SB {
 
   //<editor-fold defaultstate="collapsed" desc="Getters.">
   /**
+   * Checks if there isn't any content.
+   *
+   * @return True, if empty, otherwise false.
+   */
+  public boolean isEmpty() {
+    return sb.length() > 0;
+  }
+
+  /**
+   * Returns the length of the content.
+   *
+   * @return The length of the content.
+   */
+  public int length() {
+    return sb.length();
+  }
+
+  /**
    * Returns the current content.
    *
    * @return The current content.
    */
-  CharSequence toStr() {
+  public CharSequence toStr() {
     return sb;
+  }
+
+  @Override
+  public String toString() {
+    return sb.toString();
   }
   //</editor-fold>
 
@@ -48,7 +71,7 @@ class SB {
    * @param str The value to append.
    * @return The extended string builder.
    */
-  SB append(CharSequence str) {
+  public SB append(CharSequence str) {
     sb.append(str);
     return this;
   }
@@ -60,7 +83,7 @@ class SB {
    * @param val The new value.
    * @return The extended string builder.
    */
-  SB replace(String search, int val) {
+  public SB replace(String search, int val) {
     return replace(search, val, false);
   }
 
@@ -73,23 +96,24 @@ class SB {
    * replace the key with a non-breakable-space.
    * @return The extended string builder.
    */
-  SB replace(String search, int val, boolean showNegativ) {
+  public SB replace(String search, int val, boolean showNegativ) {
 
-    int pos = sb.indexOf(search);
+    // int pos = sb.indexOf(search);
     String insert = val >= 0 || showNegativ ? "" + val : "&nbsp;";
-    sb.replace(pos, pos + search.length(), insert);
+    // sb.replace(pos, pos + search.length(), insert);
+    replace(search, insert);
 
     return this;
   }
 
   /**
-   * Replaces a key by a value.
+   * Replaces all occurences of a key by the given value.
    *
    * @param search The key to replace.
    * @param val The new value.
    * @return The extended string builder.
    */
-  SB replace(String search, String val) {
+  public SB replace(String search, String val) {
 
     try {
       int pos;
@@ -103,13 +127,6 @@ class SB {
       System.err.println(ex);
     }
     return this;
-  }
-  //</editor-fold>
-
-  //<editor-fold defaultstate="collapsed" desc="Debug.">
-  @Override
-  public String toString() {
-    return sb.toString();
   }
   //</editor-fold>
 }

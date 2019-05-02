@@ -12,6 +12,10 @@ class Match {
 
   //<editor-fold defaultstate="collapsed" desc="The fields.">
   /**
+   * The index of the match.
+   */
+  int index;
+  /**
    * The date info.
    */
   String date;

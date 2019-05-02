@@ -66,16 +66,27 @@ public class Main {
    * @param args the command line arguments
    */
   public static void main(String[] args) {
-//    createStats(FN_SOURCE_BR3, HTML_STATS_BR3, JSON_DIA_BR3, "br3g", "Spiele");
-//    createStats(FN_SOURCE_U17, HTML_STATS_U17, JSON_DIA_U17, "u17", "Spiele");
-//
-//    createStats(FN_SOURCE_U15AR, HTML_STATS_MPO, JSON_DIA_MPO, "br2", "SpieleMPO");
-//    createStats(FN_SOURCE_U15AR, HTML_STATS_U15AR, JSON_DIA_U15AR, "br3", "SpieleAR");
-//    createStats(FN_SOURCE_U15AR, HTML_STATS_U15FD, JSON_DIA_U15FD, "br4", "SpieleUL");
-    createStats(FN_SOURCE_U15AR, HTML_STATS_U15PN, JSON_DIA_U15PN, "u15pn", "Pordenone");
+//    createStats(FN_SOURCE_BR3, HTML_STATS_BR3, JSON_DIA_BR3, "br3g", "Spiele", "br3g");
+    createStats(FN_SOURCE_U17, HTML_STATS_U17, JSON_DIA_U17, "u17", "Spiele", "u17");
+//    createStats(FN_SOURCE_U15AR, HTML_STATS_MPO, JSON_DIA_MPO, "br2", "SpieleMPO", "br2");
+//    createStats(FN_SOURCE_U15AR, HTML_STATS_U15AR, JSON_DIA_U15AR, "br3", "SpieleAR", "br3");
+
+//    createStats(FN_SOURCE_U15AR, HTML_STATS_U15FD, JSON_DIA_U15FD, "br4", "SpieleUL", "br4");
+//    createStats(FN_SOURCE_U15AR, HTML_STATS_U15PN, JSON_DIA_U15PN, "u15pn", "Pordenone", "pn");
   }
 
-  private static void createStats(String source, String target, String targetDia, String back, String sheet) {
+  /**
+   * Creates the statistics with diagrams.
+   *
+   * @param source The source file with the statistics.
+   * @param target The html file to create.
+   * @param targetDia The JSON data file to create to prepare the diagrams.
+   * @param backKey The key to return from a common site(e.g. viewer) to the
+   * right anchor.
+   * @param sheet The name of the sheet with the statistics.
+   * @param keyDiagram The key of the diagram svg files.
+   */
+  private static void createStats(String source, String target, String targetDia, String backKey, String sheet, String keyDiagram) {
 
     // init data
     ROW = 0;
@@ -89,7 +100,6 @@ public class Main {
     try {
       //<editor-fold defaultstate="collapsed" desc="Open the sheet for reading.">
       // open file
-      // fileInput = new FileInputStream(new File(FN));
       fileInput = new FileInputStream(new File(source));
 
       // get workbook from file content, prepare formula evaluator
@@ -99,7 +109,8 @@ public class Main {
       // get sheet
       SHEET = workbook.getSheet(sheet);
       if (SHEET == null) {
-        Logger.getLogger(Main.class.getName()).log(Level.SEVERE, "Cannot find sheet " + sheet + "!");
+        Logger.getLogger(Main.class.getName())
+          .log(Level.SEVERE, "Cannot find sheet {0}!", sheet);
         workbook.close();
         fileInput.close();
         return;
@@ -112,12 +123,26 @@ public class Main {
         match = readMatch();
         if (match != null) {
           DATA.add(match);
+          match.index = DATA.size();
         }
       } while (match != null);
 
       // generate of the output
       Generator generator = new Generator(DATA);
-      generator.create(target, targetDia, back);
+      // are diagrams to create
+      /* */
+      if (!keyDiagram.isEmpty()) {
+        generator.deleteUserData();
+        generator.createJsonForDiagrams(targetDia, keyDiagram);
+        extern.DiaCreator.createDiagrams(keyDiagram);
+        extern.DiaCreator.moveDiagramFiles(keyDiagram);
+        extern.DiaCreator.moveJsonDiagramFiles();
+        generator.deleteUserData();
+      }
+      /**/
+
+      // create statistics
+      generator.create(target, backKey, keyDiagram);
 
     } catch (FileNotFoundException ex) {
       Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
@@ -199,7 +224,7 @@ public class Main {
     }
 
     // if cell exists and is not empty: start new match
-    if (cell0 != null && cell0.getCellType() != CellType.BLANK) {
+    if (row != null && cell0 != null && cell0.getCellType() != CellType.BLANK) {
       match = new Match();
 
       // must be a date - read match info from cell 1 and 2
@@ -293,7 +318,7 @@ public class Main {
         player = new Player();
 
         // set player name
-        player.name = t0 == CellType.STRING ? cell0.getStringCellValue() : "";
+        player.name = t0 == CellType.STRING && cell0 != null ? cell0.getStringCellValue() : "";
         // footer has an empty name
         if (player.name.length() == 0) {
           type = "footer";

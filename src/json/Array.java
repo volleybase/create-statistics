@@ -13,6 +13,10 @@ public class Array implements JsonX {
 
   private final List<JsonX> values = new ArrayList<>();
 
+  public boolean isEmpty() {
+    return values.isEmpty();
+  }
+
   public void add(int value) {
     values.add(new Value(value));
   }

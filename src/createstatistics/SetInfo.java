@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 /**
  * A utility class to store the actions of a set.
@@ -59,6 +60,15 @@ class XMap {
 
     // nothing found
     return null;
+  }
+
+  /**
+   * Returns the keys.
+   *
+   * @return The keys.
+   */
+  Set<String> keys() {
+    return Collections.unmodifiableSet(data.keySet());
   }
   //</editor-fold>
 
@@ -354,15 +364,15 @@ class SetInfo {
     }
 
     // points team B
-    for (Integer pt : scoringsA) {
+    scoringsA.forEach((pt) -> {
       sb.append(fmt(pt)).append(" ");
-    }
+    });
 
     // points team B
     sb.append(Str.NL);
-    for (Integer pt : scoringsB) {
+    scoringsB.forEach((pt) -> {
       sb.append(fmt(pt)).append(" ");
-    }
+    });
 
     // add optional actions
     if (!actions.isEmpty()) {
