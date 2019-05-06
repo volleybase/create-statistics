@@ -33,6 +33,7 @@ public class Main {
   private static final String FN_SOURCE_U17 = "D:/workdir/brueckl-hotvolleys-source/_work/Statistik17.xlsx";
   private static final String FN_SOURCE_U15AR = "D:/workdir/brueckl-hotvolleys-source/_work/Statistik15AR.xlsx";
   private static final String FN_SOURCE_U13 = "D:/workdir/brueckl-hotvolleys-source/_work/Statistik15AR.xlsx";
+  private static final String FN_SOURCE_U15 = "D:/workdir/brueckl-hotvolleys-source/_work/Statistik15AR.xlsx";
 
   // the file names of the target files to write
   private static final String HTML_STATS_BR3 = "D:/workdir/brueckl-hotvolleys-source/uld/statistics3.html";
@@ -42,6 +43,7 @@ public class Main {
   private static final String HTML_STATS_MPO = "D:/workdir/brueckl-hotvolleys-source/lld/statistics.html";
   private static final String HTML_STATS_U15PN = "D:/workdir/brueckl-hotvolleys-source/u15/statistics15pn.html";
   private static final String HTML_STATS_U13 = "D:/workdir/brueckl-hotvolleys-source/u13/statistics.html";
+  private static final String HTML_STATS_U15 = "D:/workdir/brueckl-hotvolleys-source/u15/statistics.html";
 
   // diagram data output
   private static final String JSON_DIA_BR3 = "D:/workdir/vb-statsone-backup/_backup/i%20selba2/userdata/gamesBR3.json";
@@ -76,8 +78,9 @@ public class Main {
 //    createStats(FN_SOURCE_U15AR, HTML_STATS_U15FD, JSON_DIA_U15FD, "br4", "SpieleUL", "br4");
 //    createStats(FN_SOURCE_U15AR, HTML_STATS_U15PN, JSON_DIA_U15PN, "u15pn", "Pordenone", "pn");
 //
-    // U13 finals
-    createStats(FN_SOURCE_U13, HTML_STATS_U13, null, "u13", "U13F", "");
+    // U13/u15 finals
+    // createStats(FN_SOURCE_U13, HTML_STATS_U13, null, "u13", "U13F", "");
+    createStats(FN_SOURCE_U15, HTML_STATS_U15, null, "u15", "U15F", "");
   }
 
   /**
