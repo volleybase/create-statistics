@@ -42,8 +42,9 @@ public class Main {
   private static final String HTML_STATS_U17 = "D:/workdir/brueckl-hotvolleys-source/u17/statistics.html";
   private static final String HTML_STATS_MPO = "D:/workdir/brueckl-hotvolleys-source/lld/statistics.html";
   private static final String HTML_STATS_U15PN = "D:/workdir/brueckl-hotvolleys-source/u15/statistics15pn.html";
-  private static final String HTML_STATS_U13 = "D:/workdir/brueckl-hotvolleys-source/u13/statistics.html";
   private static final String HTML_STATS_U15 = "D:/workdir/brueckl-hotvolleys-source/u15/statistics.html";
+  private static final String HTML_STATS_U13 = "D:/workdir/brueckl-hotvolleys-source/u13/statistics.html";
+  private static final String HTML_STATS_U12 = "D:/workdir/brueckl-hotvolleys-source/u12/statistics.html";
 
   // diagram data output
   private static final String JSON_DIA_BR3 = "D:/workdir/vb-statsone-backup/_backup/i%20selba2/userdata/gamesBR3.json";
@@ -80,7 +81,9 @@ public class Main {
 //
     // U13/u15 finals
     // createStats(FN_SOURCE_U13, HTML_STATS_U13, null, "u13", "U13F", "");
-    createStats(FN_SOURCE_U15, HTML_STATS_U15, null, "u15", "U15F", "");
+    // createStats(FN_SOURCE_U15, HTML_STATS_U15, null, "u15", "U15F", "");
+    // U12 ÖMS
+    createStats(FN_SOURCE_U15, HTML_STATS_U12, null, "u12x", "U12F", "");
   }
 
   /**
