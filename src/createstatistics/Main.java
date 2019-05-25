@@ -44,6 +44,7 @@ public class Main {
   private static final String HTML_STATS_U15PN = "D:/workdir/brueckl-hotvolleys-source/u15/statistics15pn.html";
   private static final String HTML_STATS_U15 = "D:/workdir/brueckl-hotvolleys-source/u15/statistics.html";
   private static final String HTML_STATS_U13 = "D:/workdir/brueckl-hotvolleys-source/u13/statistics.html";
+  private static final String HTML_STATS_U13X = "D:/workdir/brueckl-hotvolleys-source/u13/statisticsX.html";
   private static final String HTML_STATS_U12 = "D:/workdir/brueckl-hotvolleys-source/u12/statistics.html";
 
   // diagram data output
@@ -83,7 +84,9 @@ public class Main {
     // createStats(FN_SOURCE_U13, HTML_STATS_U13, null, "u13", "U13F", "");
     // createStats(FN_SOURCE_U15, HTML_STATS_U15, null, "u15", "U15F", "");
     // U12 ÖMS
-    createStats(FN_SOURCE_U15, HTML_STATS_U12, null, "u12x", "U12F", "");
+    // createStats(FN_SOURCE_U15, HTML_STATS_U12, null, "u12x", "U12F", "");
+    // U13 ÖMS
+    createStats(FN_SOURCE_U15, HTML_STATS_U13X, null, "u13x", "U13X", "");
   }
 
   /**
