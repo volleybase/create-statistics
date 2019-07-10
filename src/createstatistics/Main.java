@@ -29,31 +29,29 @@ public class Main {
 
   //<editor-fold defaultstate="collapsed" desc="The fields.">
   // statistics source file
-  private static final String FN_SOURCE_BR3 = "D:/workdir/brueckl-hotvolleys-source/_work/Statistik.xlsx";
-  private static final String FN_SOURCE_U17 = "D:/workdir/brueckl-hotvolleys-source/_work/Statistik17.xlsx";
-  private static final String FN_SOURCE_U15AR = "D:/workdir/brueckl-hotvolleys-source/_work/Statistik15AR.xlsx";
-  private static final String FN_SOURCE_U13 = "D:/workdir/brueckl-hotvolleys-source/_work/Statistik15AR.xlsx";
-  private static final String FN_SOURCE_U15 = "D:/workdir/brueckl-hotvolleys-source/_work/Statistik15AR.xlsx";
+  private static final String FN_SOURCE_19 = "D:/workdir/brueckl-hotvolleys-source/_work/Statistik-19.xlsx";
 
-  // the file names of the target files to write
-  private static final String HTML_STATS_BR3 = "D:/workdir/brueckl-hotvolleys-source/uld/statistics3.html";
-  private static final String HTML_STATS_U15AR = "D:/workdir/brueckl-hotvolleys-source/uld/statistics3AR.html";
-  private static final String HTML_STATS_U15FD = "D:/workdir/brueckl-hotvolleys-source/uld/statistics4FD.html";
-  private static final String HTML_STATS_U17 = "D:/workdir/brueckl-hotvolleys-source/u17/statistics.html";
-  private static final String HTML_STATS_MPO = "D:/workdir/brueckl-hotvolleys-source/lld/statistics.html";
-  private static final String HTML_STATS_U15PN = "D:/workdir/brueckl-hotvolleys-source/u15/statistics15pn.html";
-  private static final String HTML_STATS_U15 = "D:/workdir/brueckl-hotvolleys-source/u15/statistics.html";
-  private static final String HTML_STATS_U13 = "D:/workdir/brueckl-hotvolleys-source/u13/statistics.html";
-  private static final String HTML_STATS_U13X = "D:/workdir/brueckl-hotvolleys-source/u13/statisticsX.html";
-  private static final String HTML_STATS_U12 = "D:/workdir/brueckl-hotvolleys-source/u12/statistics.html";
+  //<editor-fold defaultstate="collapsed" desc="The file names of the target files to write.">
+  private static final String HTML_STATS_19_BR3 = "D:/workdir/brueckl-hotvolleys-source/statistics/19/br3.html";
+  private static final String HTML_STATS_19_U15AR = "D:/workdir/brueckl-hotvolleys-source/statistics/19/u15AR.html";
+  private static final String HTML_STATS_19_U15FD = "D:/workdir/brueckl-hotvolleys-source/statistics/19/u15FD.html";
+  private static final String HTML_STATS_19_U17 = "D:/workdir/brueckl-hotvolleys-source/statistics/19/u17.html";
+  private static final String HTML_STATS_19_MPO = "D:/workdir/brueckl-hotvolleys-source/statistics/19/mpo.html";
+  private static final String HTML_STATS_19_U15PN = "D:/workdir/brueckl-hotvolleys-source/statistics/19/u15pn.html";
+  private static final String HTML_STATS_19_U15 = "D:/workdir/brueckl-hotvolleys-source/statistics/19/u15.html";
+  private static final String HTML_STATS_19_U13 = "D:/workdir/brueckl-hotvolleys-source/statistics/19/u13.html";
+  private static final String HTML_STATS_19_U13X = "D:/workdir/brueckl-hotvolleys-source/statistics/19/u13x.html";
+  private static final String HTML_STATS_19_U12 = "D:/workdir/brueckl-hotvolleys-source/statistics/19/u12.html";
+  //</editor-fold>
 
-  // diagram data output
-  private static final String JSON_DIA_BR3 = "D:/workdir/vb-statsone-backup/_backup/i%20selba2/userdata/gamesBR3.json";
-  private static final String JSON_DIA_U15AR = "D:/workdir/vb-statsone-backup/_backup/i%20selba2/userdata/gamesAR.json";
-  private static final String JSON_DIA_U15FD = "D:/workdir/vb-statsone-backup/_backup/i%20selba2/userdata/gamesFD.json";
-  private static final String JSON_DIA_U15PN = "D:/workdir/vb-statsone-backup/_backup/i%20selba2/userdata/games15pn.json";
-  private static final String JSON_DIA_U17 = "D:/workdir/vb-statsone-backup/_backup/i%20selba2/userdata/games17.json";
-  private static final String JSON_DIA_MPO = "D:/workdir/vb-statsone-backup/_backup/i%20selba2/userdata/gamesMPO.json";
+  //<editor-fold defaultstate="collapsed" desc="Diagram data output.">
+  private static final String JSON_DIA_19_BR3 = "D:/workdir/vb-statsone-backup/_backup/i%20selba2/userdata/gamesBR3_19.json";
+  private static final String JSON_DIA_19_U15AR = "D:/workdir/vb-statsone-backup/_backup/i%20selba2/userdata/gamesAR_19.json";
+  private static final String JSON_DIA_19_U15FD = "D:/workdir/vb-statsone-backup/_backup/i%20selba2/userdata/gamesFD_19.json";
+  private static final String JSON_DIA_19_U15PN = "D:/workdir/vb-statsone-backup/_backup/i%20selba2/userdata/games15pn_19.json";
+  private static final String JSON_DIA_19_U17 = "D:/workdir/vb-statsone-backup/_backup/i%20selba2/userdata/games17_19.json";
+  private static final String JSON_DIA_19_MPO = "D:/workdir/vb-statsone-backup/_backup/i%20selba2/userdata/gamesMPO_19.json";
+  //</editor-fold>
 
   // POI - formula evaluator
   private static FormulaEvaluator evaluator;
@@ -72,21 +70,21 @@ public class Main {
    * @param args the command line arguments
    */
   public static void main(String[] args) {
-//    createStats(FN_SOURCE_BR3, HTML_STATS_BR3, JSON_DIA_BR3, "br3g", "Spiele", "br3g");
-//    createStats(FN_SOURCE_U17, HTML_STATS_U17, JSON_DIA_U17, "u17", "Spiele", "u17");
-//    createStats(FN_SOURCE_U15AR, HTML_STATS_MPO, JSON_DIA_MPO, "br2", "SpieleMPO", "br2");
-//    createStats(FN_SOURCE_U15AR, HTML_STATS_U15AR, JSON_DIA_U15AR, "br3", "SpieleAR", "br3");
-
-//    createStats(FN_SOURCE_U15AR, HTML_STATS_U15FD, JSON_DIA_U15FD, "br4", "SpieleUL", "br4");
-//    createStats(FN_SOURCE_U15AR, HTML_STATS_U15PN, JSON_DIA_U15PN, "u15pn", "Pordenone", "pn");
+//    createStats(FN_SOURCE_19, HTML_STATS_19_BR3, JSON_DIA_19_BR3, "br3g_19", "UL3-GD");
+//    createStats(FN_SOURCE_19, HTML_STATS_19_U15AR, JSON_DIA_19_U15AR, "br3_19", "SpieleAR");
+//    createStats(FN_SOURCE_19, HTML_STATS_19_U15FD, JSON_DIA_19_U15FD, "br4_19", "SpieleUL");
+//    createStats(FN_SOURCE_19, HTML_STATS_19_U15PN, JSON_DIA_19_U15PN, "u15pn_19", "Pordenone");
 //
-    // U13/u15 finals
-    // createStats(FN_SOURCE_U13, HTML_STATS_U13, null, "u13", "U13F", "");
-    // createStats(FN_SOURCE_U15, HTML_STATS_U15, null, "u15", "U15F", "");
-    // U12 ÖMS
-    // createStats(FN_SOURCE_U15, HTML_STATS_U12, null, "u12x", "U12F", "");
-    // U13 ÖMS
-    createStats(FN_SOURCE_U15, HTML_STATS_U13X, null, "u13x", "U13X", "");
+//    createStats(FN_SOURCE_19, HTML_STATS_19_U17, JSON_DIA_19_U17, "u17_19", "U17");
+//    createStats(FN_SOURCE_19, HTML_STATS_19_MPO, JSON_DIA_19_MPO, "br2_19", "SpieleMPO");
+//
+//    // U13/u15 finals
+//    createStats(FN_SOURCE_19, HTML_STATS_19_U13, null, "u13_19", "U13F");
+//    createStats(FN_SOURCE_19, HTML_STATS_19_U15, null, "u15_19", "U15F");
+//    // U12 ÖMS
+//    createStats(FN_SOURCE_19, HTML_STATS_19_U12, null, "u12x_19", "U12F");
+//    // U13 ÖMS
+//    createStats(FN_SOURCE_19, HTML_STATS_19_U13X, null, "u13x_19", "U13X");
   }
 
   /**
@@ -100,11 +98,13 @@ public class Main {
    * @param sheet The name of the sheet with the statistics.
    * @param keyDiagram The key of the diagram svg files.
    */
-  private static void createStats(String source, String target, String targetDia, String backKey, String sheet, String keyDiagram) {
+  private static void createStats(String source, String target, String targetDia, String backKey, String sheet) {
 
     // init data
     ROW = 0;
     DATA = new ArrayList<>();
+    // the internal key
+    String keyDiagram = targetDia != null && targetDia.length() > 0 ? backKey : "";
 
     // to read from file
     FileInputStream fileInput = null;

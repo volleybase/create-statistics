@@ -18,7 +18,8 @@ public class DiaCreator {
   private final static String LIN2 = "==========================================================";
 
   private final static String CHROME = "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe";
-  private final static String URL_PN = "http://localhost:5005/index.html#generator/generatorimage/0000y9EsXrfvBghvOxRObDmQ1Rpr32xw";
+  // private final static String URL_PN = "http://localhost:5005/index.html#generator/generatorimage/0000y9EsXrfvBghvOxRObDmQ1Rpr32xw";
+  private final static String URL_GENERATOR = "http://localhost:5005/index.html#generator/generatorimage:0000y9EsXrfvBghvOxRObDmQ1Rpr32xw";
   private final static String WORK = "D:\\workdir\\work\\diagram";
   private final static String WORK_JSON = "D:\\workdir\\work\\JSON";
   // the directory for the input files of the diagram service
@@ -27,15 +28,15 @@ public class DiaCreator {
   private final static HashMap<String, String> URLS = new HashMap<>();
 
   static {
-    URLS.put("br2", URL_PN);
-    URLS.put("br3g", URL_PN);
-    URLS.put("br3", URL_PN);
-    URLS.put("br4", URL_PN);
+    URLS.put("br2_19", URL_GENERATOR);
+    URLS.put("br3g_19", URL_GENERATOR);
+    URLS.put("br3_19", URL_GENERATOR);
+    URLS.put("br4_19", URL_GENERATOR);
 
-    URLS.put("pn", URL_PN);
-    URLS.put("u17", URL_PN);
+    URLS.put("u15pn_19", URL_GENERATOR);
+    URLS.put("u17_19", URL_GENERATOR);
 
-    URLS.put("test", "http://localhost:5005/index.html#generator/category/0000yOTyrTR3NSYgdW6KdzvO4KBr4Gdw");
+    // URLS.put("test", "http://localhost:5005/index.html#generator/category/0000yOTyrTR3NSYgdW6KdzvO4KBr4Gdw");
   }
 
   @SuppressWarnings("SleepWhileInLoop")
