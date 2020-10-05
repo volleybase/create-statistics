@@ -5,13 +5,13 @@ package createstatistics;
  *
  * @author volleybase
  */
-class Str {
+public class Str {
 
   //<editor-fold defaultstate="collapsed" desc="The fields.">
   /**
    * An abbreviation for new line.
    */
-  static final String NL = System.lineSeparator();
+  public static final String NL = System.lineSeparator();
   //</editor-fold>
 
   //<editor-fold defaultstate="collapsed" desc="The methods used to format the debug output.">
@@ -21,7 +21,7 @@ class Str {
    * @param nr The number to pad.
    * @return Th epadded number.
    */
-  static String nnn(int nr) {
+  public static String nnn(int nr) {
     String val = "   " + nr;
     return val.substring(val.length() - 3);
   }
@@ -33,7 +33,7 @@ class Str {
    * @param len The length of the result.
    * @return The padded value.
    */
-  static String str(String str, int len) {
+  public static String str(String str, int len) {
     String val = "          " + str;
     return val.substring(val.length() - len);
   }

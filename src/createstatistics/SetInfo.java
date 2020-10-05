@@ -1,129 +1,36 @@
 package createstatistics;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
-
-/**
- * A utility class to store the actions of a set.
- *
- * @author volleybase
- */
-class XMap {
-
-  //<editor-fold defaultstate="collapsed" desc="The fields.">
-  private final HashMap<String, List<SetAction>> data = new HashMap<>();
-  //</editor-fold>
-
-  //<editor-fold defaultstate="collapsed" desc="The methods.">
-  /**
-   * Adds a an action.
-   *
-   * @param key The key of the action.
-   * @param action The action.
-   */
-  void add(String key, SetAction action) {
-    List<SetAction> acts;
-
-    if (data.containsKey(key)) {
-      acts = data.get(key);
-    } else {
-      acts = new ArrayList<>();
-      data.put(key, acts);
-    }
-
-    acts.add(action);
-  }
-
-  /**
-   * Is the actions' store empty?
-   *
-   * @return True if empty, otherwise false.
-   */
-  boolean isEmpty() {
-    return data.isEmpty();
-  }
-
-  /**
-   * Returns the actions for the given key.
-   *
-   * @param key The key of the next action to handle.
-   * @return The actions, or null if there is not any action for a given key.
-   */
-  List<SetAction> get(String key) {
-
-    if (data.containsKey(key)) {
-      return Collections.unmodifiableList(data.get(key));
-    }
-
-    // nothing found
-    return null;
-  }
-
-  /**
-   * Returns the keys.
-   *
-   * @return The keys.
-   */
-  Set<String> keys() {
-    return Collections.unmodifiableSet(data.keySet());
-  }
-  //</editor-fold>
-
-  //<editor-fold defaultstate="collapsed" desc="Debug.">
-  @Override
-  public String toString() {
-    StringBuilder sb = new StringBuilder();
-    ArrayList<String> keys = new ArrayList<>(data.keySet());
-    Collections.sort(keys);
-
-    for (int i = 0; i < keys.size(); ++i) {
-      if (i > 0) {
-        sb.append(Str.NL);
-      }
-      sb.append(keys.get(i)).append(": ");
-
-      List<SetAction> acts = data.get(keys.get(i));
-      boolean first = true;
-      for (SetAction act : acts) {
-        if (first) {
-          first = false;
-        } else {
-          sb.append("; ");
-        }
-        sb.append(act);
-      }
-    }
-
-    return sb.toString();
-  }
-  //</editor-fold>
-}
+import java.util.Map;
+import svg.pps.ActionInfo;
 
 /**
  * The infos of a set.
  *
  * @author volleybase
  */
-class SetInfo {
+public class SetInfo {
 
   //<editor-fold defaultstate="collapsed" desc="The fields.">
   // The number of the set.
   final int nr;
   // the scoring of team A
-  final List<Integer> scoringsA = new ArrayList<>();
+  public final List<Integer> scoringsA = new ArrayList<>();
   // the scoring of team B
-  final List<Integer> scoringsB = new ArrayList<>();
+  public final List<Integer> scoringsB = new ArrayList<>();
   // true if team A starts with serving, otherwise false
   boolean startA;
-  // the actions store
-  final XMap actions = new XMap();
+//  // the actions store
+//  final XMap actions = new XMap();
+  public final Map<String, List<ActionInfo>> actions = new HashMap<>();
   // the line up of team A
   ArrayList<String> lineUpA = null;
-  // the line up of team A
+  ArrayList<String> lineUpAOrig = null;
+  // the line up of team B
   ArrayList<String> lineUpB = null;
+  ArrayList<String> lineUpBOrig = null;
   // flag for decision set
   boolean decision = false;
   //</editor-fold>
@@ -164,6 +71,20 @@ class SetInfo {
     return this;
   }
 
+  public int maxPt() {
+    return Math.max(
+      scoringsA.get(scoringsA.size() - 1),
+      scoringsB.get(scoringsB.size() - 1));
+  }
+
+  public int length() {
+    return scoringsA.size() + scoringsB.size() - 1;
+  }
+
+  public boolean isAServing() {
+    return scoringsA.size() > 0 && scoringsA.get(0) >= 0;
+  }
+
   /**
    * Adds an additional action info.
    *
@@ -176,6 +97,8 @@ class SetInfo {
 
       // first part might be a key
       switch (parts[0]) {
+
+        // check for decision set
         case "D":
           decision = true;
           break;
@@ -198,47 +121,53 @@ class SetInfo {
           if (parts.length != 7) {
             err(actioninfo);
           }
-          // List<String> lineUp = Arrays.asList(Arrays.copyOfRange(parts, 1, parts.length));
           ArrayList<String> lineUp = new ArrayList<>();
+          ArrayList<String> lineUpOrig = new ArrayList<>();
           for (int p = 1; p < parts.length; ++p) {
             lineUp.add(parts[p]);
+            lineUpOrig.add(parts[p]);
           }
           if (parts[0].charAt(0) == 'L') {
             lineUpA = lineUp;
+            lineUpAOrig = lineUpOrig;
           } else {
             lineUpB = lineUp;
+            lineUpBOrig = lineUpOrig;
           }
           found = true;
           break;
       }
 
-      // look into 2nd part
-      if (!found) {
-        switch (parts[1]) {
-
-          // Service
-          case "S":
-          case "s":
-            key = (parts[1].equals("S") ? "A:" : "B:") + parts[0];
-            if (parts.length != 3) {
-              err(actioninfo);
-            }
-            if (key.charAt(0) == 'A' && lineUpA != null) {
-              throw new IllegalArgumentException("Do not mix lineup and service for team A!");
-            }
-            if (key.charAt(0) == 'B' && lineUpB != null) {
-              throw new IllegalArgumentException("Do not mix lineup and service for team B!");
-            }
-            add(new SetAction(key, SetAction.Type.SERVICE, parts[1].equals("S"), parts[2]));
-            found = true;
-            break;
-        }
-      }
-
+// old service - replaced by detecting from scorings
+//      // look into 2nd part
+//      if (!found) {
+//        switch (parts[1]) {
+//
+//          // Service
+//          case "S":
+//          case "s":
+//            key = (parts[1].equals("S") ? "A:" : "B:") + parts[0];
+//            if (parts.length != 3) {
+//              err(actioninfo);
+//            }
+//            if (key.charAt(0) == 'A' && lineUpA != null) {
+//              throw new IllegalArgumentException("Do not mix lineup and service for team A!");
+//            }
+//            if (key.charAt(0) == 'B' && lineUpB != null) {
+//              throw new IllegalArgumentException("Do not mix lineup and service for team B!");
+//            }
+//            add(new SetAction(key, SetAction.Type.SERVICE, parts[1].equals("S"), parts[2]));
+//            found = true;
+//            break;
+//        }
+//      }
+//
       // still not found: look into 3rd part
       if (!found) {
-        key = parts[0] + ":" + parts[1];
-
+        // change scoring for timeout or substitution of team b
+        key = parts[2].equals("t") || parts[2].equals("w")
+          ? (actKey(parts[1]) + ":" + actKey(parts[0]))
+          : (actKey(parts[0]) + ":" + actKey(parts[1]));
         switch (parts[2]) {
 
           case "T":
@@ -246,7 +175,8 @@ class SetInfo {
             if (parts.length != 3) {
               err(actioninfo);
             }
-            add(new SetAction(key, SetAction.Type.TIMEOUT, parts[2].equals("T")));
+            // add(new SetAction(key, SetAction.Type.TIMEOUT, parts[2].equals("T")));
+            addAction(key, ActionInfo.Type.TIMEOUT, parts[2].equals("T"), "TO");
             break;
 
           case "W":
@@ -254,14 +184,16 @@ class SetInfo {
             if (parts.length != 4) {
               err(actioninfo);
             }
-            add(new SetAction(key, SetAction.Type.SUBSTITUTION, parts[2].equals("W"), parts[3]));
+            //add(new SetAction(key, SetAction.Type.SUBSTITUTION, parts[2].equals("W"), parts[3]));
+            addAction(key, ActionInfo.Type.SUBSTITUTION, parts[2].equals("W"), parts[3]);
             break;
 
           case "End":
             if (parts.length != 3) {
               err(actioninfo);
             }
-            add(new SetAction(key, SetAction.Type.END_OF_SET, true));
+            // add(new SetAction(key, SetAction.Type.END_OF_SET, true));
+            addAction(key, ActionInfo.Type.END_OF_SET, true, null);
             break;
 
           default:
@@ -275,6 +207,29 @@ class SetInfo {
     return this;
   }
 
+  private String actKey(String part) {
+    return String.format("%3s", part).replace(" ", "0");
+  }
+
+  private String actKey(int score) {
+    return String.format("%03d", score);
+  }
+
+  private void addAction(String key, ActionInfo.Type type, boolean teamA, String info) {
+    ActionInfo ai = new ActionInfo();
+    ai.type = type;
+    ai.teamA = teamA;
+    ai.info = info;
+
+    if (actions.containsKey(key)) {
+      actions.get(key).add(ai);
+    } else {
+      List<ActionInfo> infos = new ArrayList<>();
+      infos.add(ai);
+      actions.put(key, infos);
+    }
+  }
+
   /**
    * Returns the actions for a given scoring.
    *
@@ -282,42 +237,45 @@ class SetInfo {
    * @param b Points of team b.
    * @return The actions or null.
    */
-  List<SetAction> actions(int a, int b) {
-
-    List<SetAction> acts = new ArrayList<>();
-
-    String key = a + ":" + b;
-    List<SetAction> acts0 = actions.get(key);
-    if (acts0 != null) {
-      acts.addAll(acts0);
-    }
-
-    key = "A:" + a;
-    acts0 = actions.get(key);
-    if (acts0 != null) {
-      acts.addAll(acts0);
-    }
-
-    key = "B:" + b;
-    acts0 = actions.get(key);
-    if (acts0 != null) {
-      acts.addAll(acts0);
-    }
-
-    return acts.size() > 0 ? acts : null;
+  List<ActionInfo> actions(int a, int b) {
+    String key = String.format("%s:%s", actKey(a), actKey(b));
+    return actions.get(key);
   }
+//  List<SetAction> actions(int a, int b) {
+//
+//    List<SetAction> acts = new ArrayList<>();
+//
+//    String key = a + ":" + b;
+//    List<SetAction> acts0 = actions.get(key);
+//    if (acts0 != null) {
+//      acts.addAll(acts0);
+//    }
+//
+//    key = "A:" + a;
+//    acts0 = actions.get(key);
+//    if (acts0 != null) {
+//      acts.addAll(acts0);
+//    }
+//
+//    key = "B:" + b;
+//    acts0 = actions.get(key);
+//    if (acts0 != null) {
+//      acts.addAll(acts0);
+//    }
+//
+//    return acts.size() > 0 ? acts : null;
+//  }
   //</editor-fold>
 
   //<editor-fold defaultstate="collapsed" desc="Internal helper functions.">
-  /**
-   * The internal function to add the created action.
-   *
-   * @param action The action to add.
-   */
-  private void add(SetAction action) {
-    actions.add(action.key, action);
-  }
-
+//  /**
+//   * The internal function to add the created action.
+//   *
+//   * @param action The action to add.
+//   */
+//  private void add(SetAction action) {
+//    actions.add(action.key, action);
+//  }
   /**
    * Throw an error if invalid action data found.
    *
@@ -397,4 +355,64 @@ class SetInfo {
     return nr2.substring(nr2.length() - 2);
   }
   //</editor-fold>
+
+  void resetLineup() {
+    lineUpA.clear();
+    lineUpAOrig.forEach((player) -> {
+      lineUpA.add(player);
+    });
+    lineUpB.clear();
+    lineUpBOrig.forEach((player) -> {
+      lineUpB.add(player);
+    });
+  }
+
+  void checkForAction(int pS, int pR, float position) {
+    String key = isAServing()
+      ? String.format("%03d:%03d", pS, pR)
+      : String.format("%03d:%03d", pR, pS);
+    List<ActionInfo> infos = actions.get(key);
+    if (infos != null) {
+      infos.forEach((ai) -> {
+        ai.position = position;
+      });
+    }
+  }
+
+  /**
+   * Checks for replacing a player.
+   *
+   * @param pS The current score of the serving team.
+   * @param pR The current score of the receiving team.
+   * @param teamS True for serving team, otherwise false.
+   * @param player The player to check.
+   * @return The current player or the new one.
+   */
+  public String checkForReplacement(int pS, int pR, boolean teamA, String player) {
+    String pl0 = player;
+
+    // handle another replacement during same serving, too
+    String[] partsPl = player.split("/");
+    String plTest = partsPl[partsPl.length - 1];
+    String key = String.format("%03d:%03d", pS, pR);
+
+    // get actions for current scoring
+    List<ActionInfo> infos = actions.get(key);
+    if (infos != null) {
+      for (ActionInfo ai : infos) {
+        // check for replacement
+        if (ai.type == ActionInfo.Type.SUBSTITUTION && ai.teamA == teamA) {
+          String[] parts = ai.info.split("/");
+          // check player
+          if (parts[1].equals(plTest)) {
+            // found: take replacing player
+            pl0 = parts[0];
+          }
+        }
+      }
+    }
+
+    // result
+    return pl0;
+  }
 }

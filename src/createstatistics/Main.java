@@ -1,5 +1,7 @@
 package createstatistics;
 
+// TODOs create diagram
+//
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -14,6 +16,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
+import static org.apache.poi.ss.usermodel.CellType.FORMULA;
+import static org.apache.poi.ss.usermodel.CellType.NUMERIC;
+import static org.apache.poi.ss.usermodel.CellType.STRING;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -21,7 +26,7 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 /**
- * The entry point to create the statistics from excel file Statistk.xlsx.
+ * The entry point to create the statistics from excel file Statistik.xlsx.
  *
  * @author volleybase
  */
@@ -29,28 +34,14 @@ public class Main {
 
   //<editor-fold defaultstate="collapsed" desc="The fields.">
   // statistics source file
-  private static final String FN_SOURCE_19 = "D:/workdir/brueckl-hotvolleys-source/_work/Statistik-19.xlsx";
+  private static final String FN_SOURCE_21 = "D:/workdir/brueckl-hotvolleys-source/_work/Statistik-21.xlsx";
 
   //<editor-fold defaultstate="collapsed" desc="The file names of the target files to write.">
-  private static final String HTML_STATS_19_BR3 = "D:/workdir/brueckl-hotvolleys-source/statistics/19/br3.html";
-  private static final String HTML_STATS_19_U15AR = "D:/workdir/brueckl-hotvolleys-source/statistics/19/u15AR.html";
-  private static final String HTML_STATS_19_U15FD = "D:/workdir/brueckl-hotvolleys-source/statistics/19/u15FD.html";
-  private static final String HTML_STATS_19_U17 = "D:/workdir/brueckl-hotvolleys-source/statistics/19/u17.html";
-  private static final String HTML_STATS_19_MPO = "D:/workdir/brueckl-hotvolleys-source/statistics/19/mpo.html";
-  private static final String HTML_STATS_19_U15PN = "D:/workdir/brueckl-hotvolleys-source/statistics/19/u15pn.html";
-  private static final String HTML_STATS_19_U15 = "D:/workdir/brueckl-hotvolleys-source/statistics/19/u15.html";
-  private static final String HTML_STATS_19_U13 = "D:/workdir/brueckl-hotvolleys-source/statistics/19/u13.html";
-  private static final String HTML_STATS_19_U13X = "D:/workdir/brueckl-hotvolleys-source/statistics/19/u13x.html";
-  private static final String HTML_STATS_19_U12 = "D:/workdir/brueckl-hotvolleys-source/statistics/19/u12.html";
+  private static final String HTML_STATS_21_BHV1_GD = "D:/workdir/brueckl-hotvolleys-source/statistics/21/bhv1_gd.html";
   //</editor-fold>
 
   //<editor-fold defaultstate="collapsed" desc="Diagram data output.">
-  private static final String JSON_DIA_19_BR3 = "D:/workdir/vb-statsone-backup/_backup/i%20selba2/userdata/gamesBR3_19.json";
-  private static final String JSON_DIA_19_U15AR = "D:/workdir/vb-statsone-backup/_backup/i%20selba2/userdata/gamesAR_19.json";
-  private static final String JSON_DIA_19_U15FD = "D:/workdir/vb-statsone-backup/_backup/i%20selba2/userdata/gamesFD_19.json";
-  private static final String JSON_DIA_19_U15PN = "D:/workdir/vb-statsone-backup/_backup/i%20selba2/userdata/games15pn_19.json";
-  private static final String JSON_DIA_19_U17 = "D:/workdir/vb-statsone-backup/_backup/i%20selba2/userdata/games17_19.json";
-  private static final String JSON_DIA_19_MPO = "D:/workdir/vb-statsone-backup/_backup/i%20selba2/userdata/gamesMPO_19.json";
+  private static final String JSON_DIA_21_BHV1 = "D:/workdir/vb-statsone-backup/_backup/i%20selba2/userdata/gamesBHV1_21.json";
   //</editor-fold>
 
   // POI - formula evaluator
@@ -68,8 +59,9 @@ public class Main {
    * The entry point.
    *
    * @param args the command line arguments
+   * @throws java.lang.Exception
    */
-  public static void main(String[] args) {
+  public static void main(String[] args) throws Exception {
 //    createStats(FN_SOURCE_19, HTML_STATS_19_BR3, JSON_DIA_19_BR3, "br3g_19", "UL3-GD");
 //    createStats(FN_SOURCE_19, HTML_STATS_19_U15AR, JSON_DIA_19_U15AR, "br3_19", "SpieleAR");
 //    createStats(FN_SOURCE_19, HTML_STATS_19_U15FD, JSON_DIA_19_U15FD, "br4_19", "SpieleUL");
@@ -85,6 +77,10 @@ public class Main {
 //    createStats(FN_SOURCE_19, HTML_STATS_19_U12, null, "u12x_19", "U12F");
 //    // U13 ÖMS
 //    createStats(FN_SOURCE_19, HTML_STATS_19_U13X, null, "u13x_19", "U13X");
+
+    createStats(FN_SOURCE_21, HTML_STATS_21_BHV1_GD, null, "br1g_21", "BHV1_GD");
+//
+//    createDias();
   }
 
   /**
@@ -92,19 +88,20 @@ public class Main {
    *
    * @param source The source file with the statistics.
    * @param target The html file to create.
-   * @param targetDia The JSON data file to create to prepare the diagrams.
+   * @param _targetDia The JSON data file to create to prepare the diagrams -
+   * currently not used.
    * @param backKey The key to return from a common site(e.g. viewer) to the
    * right anchor.
    * @param sheet The name of the sheet with the statistics.
-   * @param keyDiagram The key of the diagram svg files.
    */
-  private static void createStats(String source, String target, String targetDia, String backKey, String sheet) {
+  private static void createStats(String source, String target, String _targetDia, String backKey, String sheet) {
 
     // init data
     ROW = 0;
     DATA = new ArrayList<>();
     // the internal key
-    String keyDiagram = targetDia != null && targetDia.length() > 0 ? backKey : "";
+    //String keyDiagram = targetDia != null && targetDia.length() > 0 ? backKey : "";
+    String keyDiagram = backKey;
 
     // to read from file
     FileInputStream fileInput = null;
@@ -123,7 +120,8 @@ public class Main {
       // get sheet
       SHEET = workbook.getSheet(sheet);
       if (SHEET == null) {
-        Logger.getLogger(Main.class.getName())
+        Logger.getLogger(Main.class
+          .getName())
           .log(Level.SEVERE, "Cannot find sheet {0}!", sheet);
         workbook.close();
         fileInput.close();
@@ -144,7 +142,7 @@ public class Main {
       // generate of the output
       Generator generator = new Generator(DATA);
       // are diagrams to create
-      /* */
+      /* old: create json files with data for diagram, ...
       if (!keyDiagram.isEmpty()) {
         generator.deleteUserData();
         generator.createJsonForDiagrams(targetDia, keyDiagram);
@@ -152,18 +150,22 @@ public class Main {
         extern.DiaCreator.moveDiagramFiles(keyDiagram);
         extern.DiaCreator.moveJsonDiagramFiles();
         generator.deleteUserData();
-      }
-      /**/
+      } */
 
+      // create diagrams
+      generator.createDiagrams(keyDiagram);
       // create statistics
       generator.create(target, backKey, keyDiagram);
 
     } catch (FileNotFoundException ex) {
-      Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+      Logger.getLogger(Main.class
+        .getName()).log(Level.SEVERE, null, ex);
     } catch (IOException ex) {
-      Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+      Logger.getLogger(Main.class
+        .getName()).log(Level.SEVERE, null, ex);
     } catch (Throwable thrown) {
-      Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, thrown);
+      Logger.getLogger(Main.class
+        .getName()).log(Level.SEVERE, null, thrown);
     } finally {
       //<editor-fold defaultstate="collapsed" desc="clean up">
       try {
@@ -287,10 +289,12 @@ public class Main {
       } while (set != null);
 
       // debug output of read match
-      String LIN = "----------------------------------------------------------";
-      System.out.println(LIN);
+      String LIN
+        = "-------------------------------------------------------------",
+        LIN2 = "=============================================================";
+      System.out.println(LIN2);
       System.out.println("match: " + match.date + " " + match.info);
-      System.out.println(LIN);
+      System.out.println(LIN2);
       System.out.println(match.toString());
       System.out.println(LIN);
     }
