@@ -1,4 +1,4 @@
-package createstatistics;
+package createstatistics.util;
 
 /**
  * String utilities.

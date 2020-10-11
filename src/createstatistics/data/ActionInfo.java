@@ -1,4 +1,4 @@
-package svg.pps;
+package createstatistics.data;
 
 /**
  * An action to display in the diagram.

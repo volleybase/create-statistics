@@ -1,6 +1,8 @@
 package createstatistics;
 
 //<editor-fold defaultstate="collapsed" desc="The imports.">
+import createstatistics.data.Match;
+import createstatistics.data.SetInfo;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
@@ -8,7 +10,9 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
-import svg.pps.Diagram;
+import svg.diagram.DiagramBase;
+import svg.diagram.DiagramDiff;
+import svg.diagram.DiagramPps;
 
 //<editor-fold defaultstate="collapsed" desc="Action filter tool - not used.">
 //class ActionFilter {
@@ -172,200 +176,14 @@ public class GeneratorDiagram {
   static final String DIR_DIA_WORK = "D:\\workdir\\work\\diagram\\";
   //</editor-fold>
 
-  private static void oldCreateDias() throws Exception {
-    // the data of the diagram
-    /*   0   0         1
-      5	 1   2  5   1  3
-      7  2   5  6   2  5
-      8  4   7  7   3  6
-     16  5   9  9  14  9
-     17  6  18 10  16 11
-     18  7  20 13  17 13
-     21  8  21 14  18 15
-     22  9  23 15  21 17
-     23 11  24 17  22 20
-     25     25 18  23 22
-                   24 23
-                   25    */
-    Integer[] pa = null, pb = null;
-    int maxY = 27; // TODO max y
-    String[] actions = null;
-    for (int i = 1; i < 4; ++i) {
-      switch (i) {
-        // set 1
-        case 1:
-          pa = new Integer[]{-1, 5, 7, 8, 16, 17, 18, 21, 22, 23, 27};
-          pb = new Integer[]{0, 1, 2, 4, 5, 6, 7, 8, 9, 11};
-          actions = new String[]{
-            "L:Alex:Bojana:Vali:StefieM:StefieR:Sabsi",
-            "l:8:2:14:13:6:11",
-            "2:0:W:B1/Bojana",
-            //"2:0:w:B2/Boj",
-            //"0:2:W:B3/Boj",
-            //"0:2:w:B4/Boj",
-            "3:0:W:Bojana/B1",
-            "1:7:t",
-            "4:13:t",
-            "21:8:W:Celi/Bojana",
-            "9:22:w:10/6"
-          };
-          break;
-
-        // set 2
-        case 2:
-          pa = new Integer[]{0, 2, 5, 7, 9, 18, 20, 21, 23, 24, 25};
-          pb = new Integer[]{-1, 5, 6, 7, 9, 10, 13, 14, 15, 17, 18};
-          actions = new String[]{
-            "l:14:8:2:11:13:10",
-            "L:Alex:Bojana:Vali:StefieM:StefieR:Sabsi",
-            "0:5:T",
-            "2:0:w:18/8",
-            "9:9:t",
-            "9:9:w:6/14",
-            "10:14:t",
-            "16:23:w:14/6",
-            "24:17:W:Dragi/StefieM"
-          //"24:17:w:Dragi2/StefieM",
-          //"17:24:W:Dragi3/StefieM",
-          //"17:24:w:Dragi4/StefieM"
-          };
-          break;
-
-        // set 3
-        case 3:
-          pa = new Integer[]{-1, 1, 2, 3, 14, 16, 17, 18, 21, 22, 23, 24, 25};
-          pb = new Integer[]{1, 3, 5, 6, 9, 11, 13, 15, 17, 20, 22, 23};
-          actions = new String[]{
-            "L:Alex:Bojana:Vali:StefieM:StefieR:Sabsi",
-            "l:8:2:11:13:10:14",
-            "6:7:w:6/10",
-            "6:9:t",
-            "6:14:w:10/6",
-            "18:15:T",
-            "19:15:T",
-            "21:15:T",
-            "21:16:T",
-            "22:17:W:Dragi/StefieM",
-            "23:22:T"
-          };
-          break;
-      }
-
-//      // any valid data
-//      if (pa != null && pb != null && pa.length > 0 && pb.length > 0) {
-//        ActionFilter filter = new ActionFilter(actions, pa, pb);
-//
-//        // prepare names for x axis
-//        List<String> namesA = null, namesB = null;
-//
-//        int lastS = 0, curS, lastR = 0, curR;
-//        int idx = -1,
-//          maxS = filter.pS.length, maxR = filter.pR.length,
-//          max = Math.max(maxS, maxR);
-//        float positionBase = -1f;
-//        filter.checkForAction(0, 0, true, 0f);
-//        filter.checkForAction(0, 0, false, 0f);
-//
-//        while (++idx < max) {
-//
-//          // handle team reception (ignore first -1)
-//          if (idx > 0 && idx < maxR) {
-//            ++positionBase;
-//
-//            int idxLR = -1;
-//            if (filter.lineupR() != null) {
-//              if (namesB == null) {
-//                namesB = new ArrayList<>();
-//              }
-//              // check for replacement of serving player
-//              idxLR = idx % filter.lineupR().size();
-//              String player = filter.lineupR().get(idxLR);
-//              String player2 = filter.checkForReplacement(lastS, lastR, false, player);
-//              namesB.add(player2);
-//              if (!player2.equals(player)) {
-//                filter.lineupR().set(idxLR, player2);
-//              }
-//            }
-//
-//            boolean first = true;
-//            curR = filter.pR[idx];
-//            int lastR0 = lastR + 1;
-//            while (curR > lastR) {
-//              ++lastR;
-//              float pos = curR - lastR0 == 0 ? 0f : (lastR - lastR0) / (float) (curR - lastR0);
-//              filter.checkForAction(lastS, lastR, false, positionBase + pos);
-//              filter.checkForAction(lastS, lastR, true, positionBase + pos);
-//
-//              // checks for replacement of serving player
-//              if (namesB != null && filter.lineupR() != null) {
-//                int idxLast = namesB.size() - 1;
-//                String player = namesB.get(idxLast);
-//                String player2 = filter.checkForReplacement(lastS, lastR, false, player);
-//                if (!player.equals(player2)) {
-//                  if (first) {
-//                    namesB.set(idxLast, player2);
-//                  } else {
-//                    namesB.set(idxLast, player + "/" + player2);
-//                  }
-//                  filter.lineupR().set(idxLR, player2);
-//                }
-//              }
-//              first = false;
-//            }
-//          }
-//
-//          // handle team service
-//          if (idx < maxS) {
-//            ++positionBase;
-//
-//            int idxLS = -1;
-//            if (filter.lineupS() != null) {
-//              if (namesA == null) {
-//                namesA = new ArrayList<>();
-//              }
-//              // check for replacement of serving player
-//              idxLS = idx % filter.lineupS().size();
-//              String player = filter.lineupS().get(idxLS);
-//              String player2 = filter.checkForReplacement(lastS, lastR, true, player);
-//              namesA.add(player2);
-//              if (!player2.equals(player)) {
-//                filter.lineupS().set(idxLS, player2);
-//              }
-//            }
-//
-//            boolean first = true;
-//            curS = filter.pS[idx];
-//            int lastS0 = lastS + 1;
-//            while (curS > lastS) {
-//              ++lastS;
-//              if (namesA != null && filter.lineupS() != null) {
-//                int idxLast = namesA.size() - 1;
-//                String player = namesA.get(idxLast);
-//                String player2 = filter.checkForReplacement(lastS, lastR, true, player);
-//                if (!player.equals(player2)) {
-//                  if (first) {
-//                    namesA.set(idxLast, player2);
-//                  } else {
-//                    namesA.set(idxLast, player + "/" + player2);
-//                  }
-//                  filter.lineupS().set(idxLS, player2);
-//                }
-//              }
-//
-//              float pos = curS - lastS0 == 0 ? 0f : (lastS - lastS0) / (float) (curS - lastS0);
-//              filter.checkForAction(lastS, lastR, false, positionBase + pos);
-//              filter.checkForAction(lastS, lastR, true, positionBase + pos);
-//
-//              first = false;
-//            }
-//          }
-//        }
-//
-//        createDia(pa, pb, maxY, namesA, namesB, filter.infos, "br1gd", 1, i);
-//      }
-    }
-  }
-
+  //<editor-fold defaultstate="collapsed" desc="Points-per-service diagram.">
+  /**
+   * Creates the points-per-service diagrams for the given match.
+   *
+   * @param match The match data.
+   * @param key The main key.
+   * @throws Exception
+   */
   static void createPointsPerService(Match match, String key) throws Exception {
 
     // get max y of match
@@ -486,20 +304,20 @@ public class GeneratorDiagram {
         }
       }
 
-      // create diagram
+      // create a diagram
       String keyDia = GeneratorDiagram.filenamePpS(key, match.index, si.nr);
-      createDia(si, maxY, namesA, namesB, keyDia);
+      // createDia(si, maxY, namesA, namesB, keyDia);
+      DiagramPps dia = new DiagramPps(si, maxY, namesA, namesB);
+      output(dia, keyDia);
     }
   }
 
-  private static void createDia(SetInfo si, int maxY,
-    List<String> namesA, List<String> namesB, String key) throws Exception {
-
-    // create diagram
-    Diagram dia = new Diagram(si, maxY, namesA, namesB);
-    output(dia, key);
-  }
-
+//  private static void createDia(SetInfo si, int maxY,
+//    List<String> namesA, List<String> namesB, String key) throws Exception {
+//
+//    Diagram dia = new Diagram(si, maxY, namesA, namesB);
+//    output(dia, key);
+//  }
   /**
    * Writes the resulting svg file.
    *
@@ -509,7 +327,7 @@ public class GeneratorDiagram {
    * @param set The number of the set.
    * @throws Exception
    */
-  private static void output(Diagram dia, String key) throws Exception {
+  private static void output(DiagramBase dia, String key) throws Exception {
     String svg = "<?xml version=\"1.0\" standalone=\"no\"?>\n" + dia.svg();
     String filename = String.format("%s%s", DIR_DIA_WORK, key);
 
@@ -525,10 +343,105 @@ public class GeneratorDiagram {
 
     System.out.format("Written %s%n", filename);
   }
+  //</editor-fold>
 
-  static String filenamePpS(String keyDiagram, int match, int set) {
+  static void createDifference(Match match, String key) throws Exception {
+
+    // calculate y axis (max-diff +/-)
+    int maxY = 0, minY = 0;
+    for (int s = 0; s < match.setInfos.size(); ++s) {
+      SetInfoHelper si = new SetInfoHelper(match.setInfos.get(s));
+      int curS = 0, curR = 0;
+
+      for (int idx = 0; idx < si.maxSize; ++idx) {
+
+        // team reception
+        if (idx > 0 && idx < si.sizeR) {
+          curR = si.scoreR.get(idx);
+          int diff = (curS - curR) * (si.isAServing ? 1 : -1);
+          maxY = Math.max(maxY, diff);
+          minY = Math.min(minY, diff);
+        }
+
+        // team service
+        if (idx < si.sizeS) {
+          curS = si.scoreS.get(idx);
+          int diff = (curS - curR) * (si.isAServing ? 1 : -1);
+          maxY = Math.max(maxY, diff);
+          minY = Math.min(minY, diff);
+        }
+      }
+    }
+
+    // prepare y axis
+    List<String> labelsY = new ArrayList<>();
+    for (int i = minY; i <= maxY; ++i) {
+      labelsY.add(String.format("%d", i));
+    }
+
+    // handle each set
+    for (int s = 0; s < match.setInfos.size(); ++s) {
+      SetInfoHelper si = new SetInfoHelper(match.setInfos.get(s));
+
+      String keyDia = GeneratorDiagram.filenameDiff(key, match.index, si.nr);
+      DiagramDiff dia = new DiagramDiff(si.sizeR + si.sizeS - 1, labelsY, -minY);
+      dia.setData(si.scoreS, si.scoreR, si.isAServing);
+      output(dia, keyDia);
+    }
+  }
+
+  //<editor-fold defaultstate="collapsed" desc="The filenames.">
+  /**
+   * Creates the filename of a points-per-service diagram.
+   *
+   * @param keyDiagram The main key of the diagrams.
+   * @param match The number of the match.
+   * @param set The number of the set.
+   * @return The creates filename.
+   */
+  public static String filenamePpS(String keyDiagram, int match, int set) {
     return keyDiagram.isEmpty() ? ""
-      : // (keyDiagram + "_" + match + "_" + set + ".svg");
-      String.format("%s_%d_%d.service.svg", keyDiagram, match, set);
+      : String.format("%s_%d_%d.service.svg", keyDiagram, match, set);
+  }
+
+  /**
+   * Creates the filename of a difference diagram.
+   *
+   * @param keyDiagram The main key of the diagrams.
+   * @param match The number of the match.
+   * @param set The number of the set.
+   * @return The creates filename.
+   */
+  public static String filenameDiff(String keyDiagram, int match, int set) {
+    return keyDiagram.isEmpty() ? ""
+      : String.format("%s_%d_%d.difference.svg", keyDiagram, match, set);
+  }
+  //</editor-fold>
+}
+
+class SetInfoHelper {
+
+  // The set info
+  //private final SetInfo si;
+  boolean isAServing;
+  int nr;
+
+  List<Integer> scoreR;
+  List<Integer> scoreS;
+  int sizeR;
+  int sizeS;
+  int maxSize;
+
+  SetInfoHelper(SetInfo si) {
+    //this.si = si;
+    isAServing = si.isAServing();
+    nr = si.nr;
+
+    scoreR = si.scoringsA.get(0) == -1 ? si.scoringsA : si.scoringsB;
+    scoreS = si.scoringsA.get(0) == -1 ? si.scoringsB : si.scoringsA;
+
+    sizeR = scoreR.size();
+    sizeS = scoreS.size();
+    maxSize = Math.max(sizeR, sizeS);
   }
 }

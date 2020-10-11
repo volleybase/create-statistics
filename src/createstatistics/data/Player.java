@@ -1,92 +1,94 @@
-package createstatistics;
+package createstatistics.data;
+
+import createstatistics.util.Str;
 
 /**
  * The info of a player.
  *
  * @author volleybase
  */
-class Player {
+public class Player {
 
   //<editor-fold defaultstate="collapsed" desc="The fields.">
   /**
    * The type of the player.
    */
-  String type;
+  public String type;
 
   /**
    * The name of the player.
    */
-  String name;
+  public String name;
 
   /**
    * The points of set 1 (-1 if not played).
    */
-  int p1;
+  public int p1;
 
   /**
    * The failures of set 1 (-1 if not played).
    */
-  int m1;
+  public int m1;
 
   /**
    * The points of set 2 (-1 if not played).
    */
-  int p2;
+  public int p2;
 
   /**
    * The failures of set 2 (-1 if not played).
    */
-  int m2;
+  public int m2;
 
   /**
    * The points of set 3 (-1 if not played).
    */
-  int p3;
+  public int p3;
 
   /**
    * The failures of set 31 (-1 if not played).
    */
-  int m3;
+  public int m3;
 
   /**
    * The points of set 4 (-1 if not played).
    */
-  int p4;
+  public int p4;
 
   /**
    * The failures of set 4 (-1 if not played).
    */
-  int m4;
+  public int m4;
 
   /**
    * The points of set 5 (-1 if not played).
    */
-  int p5;
+  public int p5;
 
   /**
    * The failures of set 5 (-1 if not played).
    */
-  int m5;
+  public int m5;
 
   /**
    * The sum of the points.
    */
-  String pSum;
+  public String pSum;
 
   /**
    * The sum of the failures.
    */
-  String mSum;
+  public String mSum;
 
   /**
    * The points minus the failures.
    */
-  String diff;
+  public String diff;
 
   /**
    * The quotient of points and failures.
    */
-  String quot;
+  public String quot;
   //</editor-fold>
 
   //<editor-fold defaultstate="collapsed" desc="Debug.">

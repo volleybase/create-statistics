@@ -1,10 +1,11 @@
 package createstatistics;
 
-// TODOs create diagram
-//
+//<editor-fold defaultstate="collapsed" desc="The imports.">
+import createstatistics.data.Match;
+import createstatistics.data.Player;
+import createstatistics.data.SetInfo;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
@@ -24,6 +25,7 @@ import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+//</editor-fold>
 
 /**
  * The entry point to create the statistics from excel file Statistik.xlsx.
@@ -55,6 +57,7 @@ public class Main {
   private static List<Match> DATA;
   //</editor-fold>
 
+  //<editor-fold defaultstate="collapsed" desc="The main entry point to create the statistics.">
   /**
    * The entry point.
    *
@@ -79,8 +82,6 @@ public class Main {
 //    createStats(FN_SOURCE_19, HTML_STATS_19_U13X, null, "u13x_19", "U13X");
 
     createStats(FN_SOURCE_21, HTML_STATS_21_BHV1_GD, null, "br1g_21", "BHV1_GD");
-//
-//    createDias();
   }
 
   /**
@@ -144,12 +145,12 @@ public class Main {
       // are diagrams to create
       /* old: create json files with data for diagram, ...
       if (!keyDiagram.isEmpty()) {
-        generator.deleteUserData();
-        generator.createJsonForDiagrams(targetDia, keyDiagram);
-        extern.DiaCreator.createDiagrams(keyDiagram);
-        extern.DiaCreator.moveDiagramFiles(keyDiagram);
-        extern.DiaCreator.moveJsonDiagramFiles();
-        generator.deleteUserData();
+      generator.deleteUserData();
+      generator.createJsonForDiagrams(targetDia, keyDiagram);
+      extern.DiaCreator.createDiagrams(keyDiagram);
+      extern.DiaCreator.moveDiagramFiles(keyDiagram);
+      extern.DiaCreator.moveJsonDiagramFiles();
+      generator.deleteUserData();
       } */
 
       // create diagrams
@@ -157,15 +158,10 @@ public class Main {
       // create statistics
       generator.create(target, backKey, keyDiagram);
 
-    } catch (FileNotFoundException ex) {
-      Logger.getLogger(Main.class
-        .getName()).log(Level.SEVERE, null, ex);
-    } catch (IOException ex) {
-      Logger.getLogger(Main.class
-        .getName()).log(Level.SEVERE, null, ex);
-    } catch (Throwable thrown) {
-      Logger.getLogger(Main.class
-        .getName()).log(Level.SEVERE, null, thrown);
+    } catch (IOException ioex) {
+      Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ioex);
+    } catch (Exception ex) {
+      Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
     } finally {
       //<editor-fold defaultstate="collapsed" desc="clean up">
       try {
@@ -184,6 +180,7 @@ public class Main {
       //</editor-fold>
     }
   }
+  //</editor-fold>
 
   //<editor-fold defaultstate="collapsed" desc="The main functions to read the data from the sheet.">
   /**

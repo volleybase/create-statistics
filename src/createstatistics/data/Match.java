@@ -1,5 +1,6 @@
-package createstatistics;
+package createstatistics.data;
 
+import createstatistics.util.Str;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,32 +9,32 @@ import java.util.List;
  *
  * @author volleybase
  */
-class Match {
+public class Match {
 
   //<editor-fold defaultstate="collapsed" desc="The fields.">
   /**
    * The index of the match.
    */
-  int index;
+  public int index;
   /**
    * The date info.
    */
-  String date;
+  public String date;
 
   /**
    * The info.
    */
-  String info;
+  public String info;
 
   /**
    * The list of players.
    */
-  List<Player> players = new ArrayList<>();
+  public List<Player> players = new ArrayList<>();
 
   /**
    * The infos of the sets.
    */
-  List<SetInfo> setInfos = new ArrayList<>();
+  public List<SetInfo> setInfos = new ArrayList<>();
   //</editor-fold>
 
   //<editor-fold defaultstate="collapsed" desc="Setters and getters.">
@@ -42,7 +43,7 @@ class Match {
    *
    * @param set The set info to add.
    */
-  void add(SetInfo set) {
+  public void add(SetInfo set) {
     setInfos.add(set);
   }
 
@@ -51,7 +52,7 @@ class Match {
    *
    * @return True if any set info has been stored, otherwise false.
    */
-  boolean hasSet() {
+  public boolean hasSet() {
     return setInfos.size() > 0;
   }
   //</editor-fold>

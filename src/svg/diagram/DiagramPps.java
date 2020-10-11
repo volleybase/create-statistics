@@ -1,7 +1,8 @@
-package svg.pps;
+package svg.diagram;
 
 //<editor-fold defaultstate="collapsed" desc="The imports.">
-import createstatistics.SetInfo;
+import createstatistics.data.ActionInfo;
+import createstatistics.data.SetInfo;
 import java.util.ArrayList;
 import java.util.List;
 import svg.CIRCLE;
@@ -9,13 +10,14 @@ import svg.LINE;
 import svg.RECT;
 import svg.SVG;
 import svg.TEXT;
+//</editor-fold>
 
 /**
  * A diagram.
  *
  * @author volleybase
  */
-public class Diagram {
+public class DiagramPps extends DiagramBase {
 
   //<editor-fold defaultstate="collapsed" desc="The fields.">
   public String colorA = "red";
@@ -29,38 +31,21 @@ public class Diagram {
   // the thickness of a data line
   private final static int DATALINE_THICKNESS = 4;
 
-  // the x axis
-  private XAxis xaxis = null;
-  // the y axis
-  private YAxis yaxis = null;
-  // the sizing factor
-  private final int factor = 30;
-  // the resulting width
-  private int width = 0;
-  // the resulting height
-  private int height = 0;
   // the line up info of team A
   private List<String> namesA = null;
   // the line up info of team B
   private List<String> namesB = null;
-  // origin - x position
-  private int origin_x = 0;
-  // origin - y position
-  private int origin_y = 0;
   // max y position for diagram
   private int top_y = 0;
   // the data
   private List<Integer> dataS, dataR;
-  // actions
-  //private final Map<String, List<String>> actions = new HashMap<>();
   // which team serves
   private boolean aIsSrv;
-  // the actions to display
-  // private List<ActionInfo> infos = null;
+  // the set to display
   private final SetInfo si;
   //</editor-fold>
 
-  public Diagram(SetInfo si, int maxY, List<String> namesA, List<String> namesB) {
+  public DiagramPps(SetInfo si, int maxY, List<String> namesA, List<String> namesB) {
 
     this.si = si;
 
@@ -79,7 +64,7 @@ public class Diagram {
    * @param max The maximum number of point for this set.
    * @return The diagram itself.
    */
-  private Diagram setY(int max) {
+  private DiagramPps setY(int max) {
     yaxis = new YAxis();
     List<String> labels = new ArrayList<>();
     for (int i = 0; i <= max; ++i) {
@@ -100,7 +85,7 @@ public class Diagram {
    * @param max The maximum number of points for all sets of a game.
    * @return The diagram itself.
    */
-  private Diagram setMaxY(int max) {
+  private DiagramPps setMaxY(int max) {
     int h = (max + 2) * factor;
     if (h > height) {
       top_y += h - height;
@@ -120,7 +105,7 @@ public class Diagram {
 //  public Diagram setX(int size) {
 //    return setX(size, null, null);
 //  }
-  private Diagram setX(int size, List<String> namesA, List<String> namesB) {
+  private DiagramPps setX(int size, List<String> namesA, List<String> namesB) {
     xaxis = new XAxis();
     List<String> labels = new ArrayList<>();
     float start = .6f;
@@ -141,20 +126,6 @@ public class Diagram {
     return this;
   }
 
-//  /**
-//   * Sets the points.
-//   *
-//   * The first entry of the receiving is -1 to mark it.
-//   *
-//   * @param dataA The points of team A.
-//   * @param dataB The points of team B.
-//   * @return The diagram itself.
-//   */
-//  public Diagram setData(Integer[] dataA, Integer[] dataB) {
-//    return setData(
-//      new ArrayList<>(Arrays.asList(dataA)),
-//      new ArrayList<>(Arrays.asList(dataB)));
-//  }
   /**
    * Sets the points.
    *
@@ -164,7 +135,7 @@ public class Diagram {
    * @param dataB The points of team B.
    * @return The diagram itself.
    */
-  private Diagram setData(List<Integer> dataA, List<Integer> dataB) {
+  private DiagramPps setData(List<Integer> dataA, List<Integer> dataB) {
 
     aIsSrv = dataA.get(0) >= 0;
 
@@ -178,16 +149,8 @@ public class Diagram {
 
     return this;
   }
-
-//  /**
-//   * Sets the actions.
-//   *
-//   * @param infos The actions to display.
-//   */
-//  public void setActions(List<ActionInfo> infos) {
-//    this.infos = infos;
-//  }
   //</editor-fold>
+
   //<editor-fold defaultstate="collapsed" desc="Svg output.">
   /**
    * Creates the svg code.
@@ -196,10 +159,11 @@ public class Diagram {
    * @throws Exception
    */
   public String svg() throws Exception {
-    SVG svg = new SVG(width, height);
-    RECT rect = new RECT(0, 0, width, height);
-    rect.style("fill", "gold");
-    svg.add(rect);
+//    SVG svg = new SVG(width, height);
+//    RECT rect = new RECT(0, 0, width, height);
+//    rect.style("fill", "gold");
+//    svg.add(rect);
+    SVG svg = createBackground();
 
     // axis, lineup
     svg.add(xaxis.svg(origin_x, origin_y, factor));

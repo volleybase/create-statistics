@@ -1,5 +1,10 @@
 package createstatistics;
 
+import createstatistics.data.ActionInfo;
+import createstatistics.data.Match;
+import createstatistics.data.SetInfo;
+import createstatistics.util.SB;
+import createstatistics.util.Str;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -10,7 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import svg.pps.ActionInfo;
 
 /**
  * The html generator.
@@ -288,8 +292,6 @@ class Generator {
           try {
 
             // points per service
-            // String fnDiaP = keyDiagram.isEmpty() ? "" :
-            //   (keyDiagram + "_" + match.index + "_" + set.nr + ".svg");
             String fnDiaP = GeneratorDiagram.filenamePpS(keyDiagram, match.index, set.nr);
             if (fnDiaP != null) {
               String fullFnDia = GeneratorDiagram.DIR_DIA_WORK + fnDiaP;
@@ -308,7 +310,7 @@ class Generator {
             }
 
             // if differences diagram exists, embed it
-            String fnDiaV = keyDiagram.isEmpty() ? "" : (keyDiagram + "_" + match.index + "_" + set.nr + ".dif.svg");
+            String fnDiaV = GeneratorDiagram.filenameDiff(keyDiagram, match.index, set.nr);
             if (fnDiaV.length() > 0) {
               String fullFnDia = GeneratorDiagram.DIR_DIA_WORK + fnDiaV;
               File file = new File(fullFnDia);
@@ -602,169 +604,170 @@ class Generator {
   }
   //</editor-fold>
 
-  //<editor-fold defaultstate="collapsed" desc="Diagram functions - old - not used.">
-//  void deleteUserData() {
-//    File dir = new File(DIR_DIA_USERDATA);
-//    File[] files = dir.listFiles(new FilenameFilter() {
-//      @Override
-//      public boolean accept(File dir, String name) {
-//        return name.startsWith("games");
-//      }
-//    });
-//
-//    for (File file : files) {
-//      System.out.println("Delete: " + file.getName());
-//      file.delete();
-//    }
-//  }
-//
-//  /**
-//   * Creates the diagrams.
-//   *
-//   * @param targetJSON The json file to write.
-//   * @param keyDiagram The (main) key of the diagrams.
-//   */
-//  void createJsonForDiagrams(String targetDia, String keyDiagram) {
-//    json.Array diaData = new json.Array();
-//    for (Match match : data) {
-//
-//      // create match info
-//      json.Object diaMatch = new json.Object();
-//      diaData.add(diaMatch);
-//      diaMatch.add("date", match.date);
-//      // diaMatch.add("time", "");
-//      diaMatch.add("info", match.info);
-//
-//      // handle each set
-//      for (SetInfo set : match.setInfos) {
-//        System.out.println(LIN);
-//        System.out.println("Satz: " + set.nr);
-//
-//        // create and add diagram data of current set
-//        json.Object diaSet = createDiaSet(set);
-//        diaMatch.add("set" + set.nr, diaSet);
-//        json.Object diaActions = new json.Object();
-//        diaSet.add("actions", diaActions);
-//        if (!keyDiagram.isEmpty()) {
-//          String keyDia = keyDiagram + '_' + match.index + '_' + set.nr;
-//          diaSet.add("key", keyDia);
-//        }
-//
-//        // add the actions
-//        Set<String> keys = set.actions.keys();
-//        for (String key : keys) {
-//          List<SetAction> actions = set.actions.get(key);
-//          json.Array diaActs = new json.Array();
-//
-//          for (SetAction action : actions) {
-//            switch (action.type) {
-//              case TIMEOUT:
-//                diaActs.add(action.teamA ? "T" : "t");
-//                break;
-//              case SUBSTITUTION:
-//                diaActs.add((action.teamA ? "W" : "w") + ":" + action.info);
-//                break;
-//            }
-//          }
-//
-//          if (!diaActs.isEmpty()) {
-//            diaActions.add(key, diaActs);
-//          }
-//        }
-//      }
-//    }
-//
-//    // write resulting file
-//    String str = diaData.stringify();
-//    File file = new File(targetDia);
-//    try (BufferedWriter writer = Files.newBufferedWriter(file.toPath(), CHARSET_UTF8)) {
-//      writer.write(str, 0, str.length());
-//    } catch (IOException x) {
-//      System.err.format("IOException: %s%n", x);
-//    }
-//  }
-//
-//  /**
-//   * Creates the diagram info of a set.
-//   *
-//   * @param set The set info.
-//   * @return The diagram info.
-//   */
-//  private static json.Object createDiaSet(SetInfo set) {
-//    json.Object diaSet = new json.Object();
-//    diaSet.add("service", set.startA ? "a" : "b");
-//
-//    diaSet.add("a", createDiaInfo(set.lineUpA, set.scoringsA));
-//    diaSet.add("b", createDiaInfo(set.lineUpB, set.scoringsB));
-//
-//    List<Integer> scoreSrv = set.startA ? set.scoringsA : set.scoringsB,
-//      scoreRec = set.startA ? set.scoringsB : set.scoringsA;
-//    int lenS = scoreSrv.size(),
-//      lenR = scoreRec.size(),
-//      len = Math.max(lenS, lenR),
-//      sc,
-//      dif = 0,
-//      maxDiff = 0,
-//      lastS = 0,
-//      lastR = 0;
-//    json.Array difs = new json.Array();
-//    diaSet.add("differences", difs);
-//    if (lenS > 0) {
-//      dif = lastS = scoreSrv.get(0);
-//      difs.add(lastS);
-//    }
-//
-//    for (int i = 1; i < len; ++i) {
-//      if (i < lenR) {
-//        sc = scoreRec.get(i);
-//        dif -= sc - lastR;
-//        lastR = sc;
-//        difs.add(dif);
-//        maxDiff = Math.max(maxDiff, Math.abs(dif));
-//      }
-//      if (i < lenS) {
-//        sc = scoreSrv.get(i);
-//        dif += sc - lastS;
-//        lastS = sc;
-//        difs.add(dif);
-//        maxDiff = Math.max(maxDiff, Math.abs(dif));
-//      }
-//    }
-//    diaSet.add("maxdifference", maxDiff);
-//
-//    return diaSet;
-//  }
-//
-//  /**
-//   * Creates the diagram info of a team.
-//   *
-//   * @param lineUp The line up.
-//   * @param scorings The scoring.
-//   * @return The diagram info of a team.
-//   */
-//  private static json.Object createDiaInfo(List<String> lineUp, List<Integer> scorings) {
-//
-//    json.Object diaInfo = new json.Object();
-//
-//    // lineup
-//    json.Array luA = new json.Array();
-//    diaInfo.add("lineup", luA);
-//    if (lineUp != null && !lineUp.isEmpty()) {
-//      lineUp.forEach((per) -> {
-//        luA.add(per);
-//      });
-//    }
-//
-//    // points
-//    json.Array points = new json.Array();
-//    diaInfo.add("points", points);
-//    scorings.forEach((pt) -> {
-//      points.add(pt);
-//    });
-//
-//    return diaInfo;
-//  }
+  //<editor-fold defaultstate="collapsed" desc="Diagram functions - old - not used - to be removed.">
+  //  void deleteUserData() {
+  //    File dir = new File(DIR_DIA_USERDATA);
+  //    File[] files = dir.listFiles(new FilenameFilter() {
+  //      @Override
+  //      public boolean accept(File dir, String name) {
+  //        return name.startsWith("games");
+  //      }
+  //    });
+  //
+  //    for (File file : files) {
+  //      System.out.println("Delete: " + file.getName());
+  //      file.delete();
+  //    }
+  //  }
+  //
+  //  /**
+  //   * Creates the diagrams.
+  //   *
+  //   * @param targetJSON The json file to write.
+  //   * @param keyDiagram The (main) key of the diagrams.
+  //   */
+  //  void createJsonForDiagrams(String targetDia, String keyDiagram) {
+  //    json.Array diaData = new json.Array();
+  //    for (Match match : data) {
+  //
+  //      // create match info
+  //      json.Object diaMatch = new json.Object();
+  //      diaData.add(diaMatch);
+  //      diaMatch.add("date", match.date);
+  //      // diaMatch.add("time", "");
+  //      diaMatch.add("info", match.info);
+  //
+  //      // handle each set
+  //      for (SetInfo set : match.setInfos) {
+  //        System.out.println(LIN);
+  //        System.out.println("Satz: " + set.nr);
+  //
+  //        // create and add diagram data of current set
+  //        json.Object diaSet = createDiaSet(set);
+  //        diaMatch.add("set" + set.nr, diaSet);
+  //        json.Object diaActions = new json.Object();
+  //        diaSet.add("actions", diaActions);
+  //        if (!keyDiagram.isEmpty()) {
+  //          String keyDia = keyDiagram + '_' + match.index + '_' + set.nr;
+  //          diaSet.add("key", keyDia);
+  //        }
+  //
+  //        // add the actions
+  //        Set<String> keys = set.actions.keys();
+  //        for (String key : keys) {
+  //          List<SetAction> actions = set.actions.get(key);
+  //          json.Array diaActs = new json.Array();
+  //
+  //          for (SetAction action : actions) {
+  //            switch (action.type) {
+  //              case TIMEOUT:
+  //                diaActs.add(action.teamA ? "T" : "t");
+  //                break;
+  //              case SUBSTITUTION:
+  //                diaActs.add((action.teamA ? "W" : "w") + ":" + action.info);
+  //                break;
+  //            }
+  //          }
+  //
+  //          if (!diaActs.isEmpty()) {
+  //            diaActions.add(key, diaActs);
+  //          }
+  //        }
+  //      }
+  //    }
+  //
+  //    // write resulting file
+  //    String str = diaData.stringify();
+  //    File file = new File(targetDia);
+  //    try (BufferedWriter writer = Files.newBufferedWriter(file.toPath(), CHARSET_UTF8)) {
+  //      writer.write(str, 0, str.length());
+  //    } catch (IOException x) {
+  //      System.err.format("IOException: %s%n", x);
+  //    }
+  //  }
+  //
+  //  /**
+  //   * Creates the diagram info of a set.
+  //   *
+  //   * @param set The set info.
+  //   * @return The diagram info.
+  //   */
+  //  private static json.Object createDiaSet(SetInfo set) {
+  //    json.Object diaSet = new json.Object();
+  //    diaSet.add("service", set.startA ? "a" : "b");
+  //
+  //    diaSet.add("a", createDiaInfo(set.lineUpA, set.scoringsA));
+  //    diaSet.add("b", createDiaInfo(set.lineUpB, set.scoringsB));
+  //
+  //    List<Integer> scoreSrv = set.startA ? set.scoringsA : set.scoringsB,
+  //      scoreRec = set.startA ? set.scoringsB : set.scoringsA;
+  //    int lenS = scoreSrv.size(),
+  //      lenR = scoreRec.size(),
+  //      len = Math.max(lenS, lenR),
+  //      sc,
+  //      dif = 0,
+  //      maxDiff = 0,
+  //      lastS = 0,
+  //      lastR = 0;
+  //    json.Array difs = new json.Array();
+  //    diaSet.add("differences", difs);
+  //    if (lenS > 0) {
+  //      dif = lastS = scoreSrv.get(0);
+  //      difs.add(lastS);
+  //    }
+  //
+  //    for (int i = 1; i < len; ++i) {
+  //      if (i < lenR) {
+  //        sc = scoreRec.get(i);
+  //        dif -= sc - lastR;
+  //        lastR = sc;
+  //        difs.add(dif);
+  //        maxDiff = Math.max(maxDiff, Math.abs(dif));
+  //      }
+  //      if (i < lenS) {
+  //        sc = scoreSrv.get(i);
+  //        dif += sc - lastS;
+  //        lastS = sc;
+  //        difs.add(dif);
+  //        maxDiff = Math.max(maxDiff, Math.abs(dif));
+  //      }
+  //    }
+  //    diaSet.add("maxdifference", maxDiff);
+  //
+  //    return diaSet;
+  //  }
+  //
+  //  /**
+  //   * Creates the diagram info of a team.
+  //   *
+  //   * @param lineUp The line up.
+  //   * @param scorings The scoring.
+  //   * @return The diagram info of a team.
+  //   */
+  //  private static json.Object createDiaInfo(List<String> lineUp, List<Integer> scorings) {
+  //
+  //    json.Object diaInfo = new json.Object();
+  //
+  //    // lineup
+  //    json.Array luA = new json.Array();
+  //    diaInfo.add("lineup", luA);
+  //    if (lineUp != null && !lineUp.isEmpty()) {
+  //      lineUp.forEach((per) -> {
+  //        luA.add(per);
+  //      });
+  //    }
+  //
+  //    // points
+  //    json.Array points = new json.Array();
+  //    diaInfo.add("points", points);
+  //    scorings.forEach((pt) -> {
+  //      points.add(pt);
+  //    });
+  //
+  //    return diaInfo;
+  //  }
   //</editor-fold>
+//
   //<editor-fold defaultstate="collapsed" desc="Create diagrams.">
   /**
    * Creates the diagrams.
@@ -775,7 +778,8 @@ class Generator {
     // handle each match: create the diagrams
     for (Match match : data) {
       GeneratorDiagram.createPointsPerService(match, keyDiagram);
-    };
+      GeneratorDiagram.createDifference(match, keyDiagram);
+    }
   }
   //</editor-fold>
 }

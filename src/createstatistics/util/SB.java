@@ -1,11 +1,11 @@
-package createstatistics;
+package createstatistics.util;
 
 /**
  * A specialized string buffer.
  *
  * @author volleybase
  */
-class SB {
+public class SB {
 
   //<editor-fold defaultstate="collapsed" desc="The fields.">
   // the internal sting builder
@@ -16,7 +16,7 @@ class SB {
   /**
    * Creates the extended string builder.
    */
-  SB() {
+  public SB() {
   }
 
   /**
@@ -24,7 +24,7 @@ class SB {
    *
    * @param str The initial value.
    */
-  SB(CharSequence str) {
+  public SB(CharSequence str) {
     this();
     sb.append(str);
   }

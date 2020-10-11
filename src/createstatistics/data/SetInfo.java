@@ -1,10 +1,10 @@
-package createstatistics;
+package createstatistics.data;
 
+import createstatistics.util.Str;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import svg.pps.ActionInfo;
 
 /**
  * The infos of a set.
@@ -15,24 +15,25 @@ public class SetInfo {
 
   //<editor-fold defaultstate="collapsed" desc="The fields.">
   // The number of the set.
-  final int nr;
+  public final int nr;
   // the scoring of team A
   public final List<Integer> scoringsA = new ArrayList<>();
   // the scoring of team B
   public final List<Integer> scoringsB = new ArrayList<>();
   // true if team A starts with serving, otherwise false
-  boolean startA;
+  public boolean startA;
+  // TODO combine startA and isAServing
 //  // the actions store
 //  final XMap actions = new XMap();
   public final Map<String, List<ActionInfo>> actions = new HashMap<>();
   // the line up of team A
-  ArrayList<String> lineUpA = null;
-  ArrayList<String> lineUpAOrig = null;
+  public ArrayList<String> lineUpA = null;
+  public ArrayList<String> lineUpAOrig = null;
   // the line up of team B
-  ArrayList<String> lineUpB = null;
-  ArrayList<String> lineUpBOrig = null;
+  public ArrayList<String> lineUpB = null;
+  public ArrayList<String> lineUpBOrig = null;
   // flag for decision set
-  boolean decision = false;
+  public boolean decision = false;
   //</editor-fold>
 
   //<editor-fold defaultstate="collapsed" desc="The constructor.">
@@ -42,7 +43,7 @@ public class SetInfo {
    * @param nr The number of the set (usually 1 - 5).
    * @param startA Should team A start with service?
    */
-  SetInfo(int nr, boolean startA) {
+  public SetInfo(int nr, boolean startA) {
     this.nr = nr;
     this.startA = startA;
   }
@@ -55,7 +56,7 @@ public class SetInfo {
    * @param points The point info.
    * @return The points info itself.
    */
-  SetInfo addA(int points) {
+  public SetInfo addA(int points) {
     scoringsA.add(points);
     return this;
   }
@@ -66,7 +67,7 @@ public class SetInfo {
    * @param points The point info.
    * @return The points info itself.
    */
-  SetInfo addB(int points) {
+  public SetInfo addB(int points) {
     scoringsB.add(points);
     return this;
   }
@@ -91,7 +92,7 @@ public class SetInfo {
    * @param actioninfo The action to add.
    * @return The points info itself.
    */
-  SetInfo add(String actioninfo) {
+  public SetInfo add(String actioninfo) {
     String[] parts = actioninfo.split(":");
     if (parts.length == 1) {
 
@@ -237,7 +238,7 @@ public class SetInfo {
    * @param b Points of team b.
    * @return The actions or null.
    */
-  List<ActionInfo> actions(int a, int b) {
+  public List<ActionInfo> actions(int a, int b) {
     String key = String.format("%s:%s", actKey(a), actKey(b));
     return actions.get(key);
   }
@@ -356,7 +357,7 @@ public class SetInfo {
   }
   //</editor-fold>
 
-  void resetLineup() {
+  public void resetLineup() {
     lineUpA.clear();
     lineUpAOrig.forEach((player) -> {
       lineUpA.add(player);
@@ -367,7 +368,7 @@ public class SetInfo {
     });
   }
 
-  void checkForAction(int pS, int pR, float position) {
+  public void checkForAction(int pS, int pR, float position) {
     String key = isAServing()
       ? String.format("%03d:%03d", pS, pR)
       : String.format("%03d:%03d", pR, pS);

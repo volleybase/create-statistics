@@ -113,7 +113,7 @@ public class XmlNode {
     return out(0);
   }
 
-  String out(int indent) {
+  public String out(int indent) {
     StringBuilder sb = new StringBuilder();
 
     // open tag
