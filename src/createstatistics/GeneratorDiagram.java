@@ -384,7 +384,8 @@ public class GeneratorDiagram {
       SetInfoHelper si = new SetInfoHelper(match.setInfos.get(s));
 
       String keyDia = GeneratorDiagram.filenameDiff(key, match.index, si.nr);
-      DiagramDiff dia = new DiagramDiff(si.sizeR + si.sizeS - 1, labelsY, -minY);
+      String keyGradient = String.format("%d_%d", match.index, si.nr);
+      DiagramDiff dia = new DiagramDiff(si.sizeR + si.sizeS - 1, labelsY, -minY, keyGradient);
       dia.setData(si.scoreS, si.scoreR, si.isAServing);
       output(dia, keyDia);
     }

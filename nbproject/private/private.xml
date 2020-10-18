@@ -43,19 +43,18 @@
             <file>file:/D:/workdir/CreateStatistics/src/createstatistics/SetAction.java</file>
         </group>
         <group name="FxCtrls">
-            <file>file:/D:/workdir/CreateStatistics/src/createstatistics/Generator.java</file>
-            <file>file:/D:/workdir/CreateStatistics/src/svg/pps/Diagram.java</file>
-            <file>file:/D:/workdir/CreateStatistics/src/createstatistics/data/Match.java</file>
-            <file>file:/D:/workdir/CreateStatistics/src/svg/pps/ActionInfo.java</file>
-            <file>file:/D:/workdir/CreateStatistics/src/createstatistics/util/DiaCreator_old.java</file>
-            <file>file:/D:/workdir/CreateStatistics/src/createstatistics/data/Player.java</file>
+            <file>file:/D:/workdir/CreateStatistics/src/svg/diagram/DiagramBase.java</file>
+            <file>file:/D:/workdir/CreateStatistics/src/svg/diagram/YAxis.java</file>
             <file>file:/D:/workdir/CreateStatistics/src/createstatistics/Main.java</file>
-            <file>file:/D:/workdir/CreateStatistics/src/createstatistics/data/SetAction_old.java</file>
+            <file>file:/D:/workdir/CreateStatistics/src/svg/XmlNode.java</file>
+            <file>file:/D:/workdir/CreateStatistics/src/createstatistics/Generator.java</file>
+            <file>file:/D:/workdir/CreateStatistics/src/svg/diagram/Axis.java</file>
+            <file>file:/D:/workdir/CreateStatistics/src/svg/diagram/DiagramDiff.java</file>
+            <file>file:/D:/workdir/CreateStatistics/src/svg/diagram/DiagramPps.java</file>
+            <file>file:/D:/workdir/CreateStatistics/src/svg/diagram/XAxis.java</file>
             <file>file:/D:/workdir/CreateStatistics/src/createstatistics/data/SetInfo.java</file>
-            <file>file:/D:/workdir/CreateStatistics/src/createstatistics/util/XMap_old.java</file>
-            <file>file:/D:/workdir/CreateStatistics/src/createstatistics/util/Str.java</file>
+            <file>file:/D:/workdir/CreateStatistics/src/createstatistics/data/Match.java</file>
             <file>file:/D:/workdir/CreateStatistics/src/createstatistics/GeneratorDiagram.java</file>
-            <file>file:/D:/workdir/CreateStatistics/src/createstatistics/util/SB.java</file>
         </group>
     </open-files>
 </project-private>

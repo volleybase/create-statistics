@@ -16,10 +16,12 @@ public class DiagramDiff extends DiagramBase {
   private List<Integer> scoreR = null;
   private boolean isAServing = false;
   private int posZero = 0;
+  private final String keyGradient;
 
-  public DiagramDiff(int width, List<String> labelsY, int posZero) {
+  public DiagramDiff(int width, List<String> labelsY, int posZero, String keyGradient) {
     int h = labelsY.size() - 1;
     this.posZero = posZero;
+    this.keyGradient = keyGradient;
 
     height = (h + 2) * factor;
     origin_y = height - factor;
@@ -55,7 +57,7 @@ public class DiagramDiff extends DiagramBase {
   @Override
   public String svg() throws Exception {
     SVG svg = createBackground();
-    svg.add(new Gradient());
+    svg.add(new Gradient(keyGradient));
     svg.add(xaxis.svg(origin_x, origin_y, factor));
     svg.add(yaxis.svg(origin_x, origin_y, factor));
 
@@ -96,7 +98,7 @@ public class DiagramDiff extends DiagramBase {
       RECT rect = new RECT(x, y, factor, h);
       rect.attr("rx", "5");
       rect.attr("ry", "5");
-      rect.style("fill", "url(#lg)").style("stroke", "none");
+      rect.style("fill", "url(#lg_" + keyGradient + ")").style("stroke", "none");
 
       svg.add(rect);
     }
@@ -107,10 +109,10 @@ class Gradient extends XmlNode {
 
   private final String content;
 
-  public Gradient() {
+  public Gradient(String key) {
     super("");
 
-    content = "  <linearGradient id=\"lg\" x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"0%\">"
+    content = "  <linearGradient id=\"lg_" + key + "\" x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"0%\">"
       + "<stop offset=\"2%\" stop-color=\"#777\" stop-opacity=\"1\"></stop>"
       + "<stop offset=\"27%\" stop-color=\"#BBB\" stop-opacity=\"1\"></stop>"
       + "<stop offset=\"42%\" stop-color=\"#BBB\" stop-opacity=\"1\"></stop>"
