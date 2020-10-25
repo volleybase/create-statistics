@@ -40,6 +40,8 @@ public class Main {
 
   //<editor-fold defaultstate="collapsed" desc="The file names of the target files to write.">
   private static final String HTML_STATS_21_BHV1_GD = "D:/workdir/brueckl-hotvolleys-source/statistics/21/bhv1_gd.html";
+  private static final String HTML_STATS_21_BHV2_GD = "D:/workdir/brueckl-hotvolleys-source/statistics/21/bhv2_gd.html";
+  private static final String HTML_STATS_21_BHV3_GD = "D:/workdir/brueckl-hotvolleys-source/statistics/21/bhv3_gd.html";
   //</editor-fold>
 
   //<editor-fold defaultstate="collapsed" desc="Diagram data output.">
@@ -82,6 +84,7 @@ public class Main {
 //    createStats(FN_SOURCE_19, HTML_STATS_19_U13X, null, "u13x_19", "U13X");
 
     createStats(FN_SOURCE_21, HTML_STATS_21_BHV1_GD, null, "br1g_21", "BHV1_GD");
+    createStats(FN_SOURCE_21, HTML_STATS_21_BHV2_GD, null, "br2g_21", "BHV2_GD");
   }
 
   /**
