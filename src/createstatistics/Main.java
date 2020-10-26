@@ -85,6 +85,7 @@ public class Main {
 
     createStats(FN_SOURCE_21, HTML_STATS_21_BHV1_GD, null, "br1g_21", "BHV1_GD");
     createStats(FN_SOURCE_21, HTML_STATS_21_BHV2_GD, null, "br2g_21", "BHV2_GD");
+    createStats(FN_SOURCE_21, HTML_STATS_21_BHV3_GD, null, "br3g_21", "BHV3_GD");
   }
 
   /**
